@@ -42,6 +42,7 @@ export default function FaceDetectionPage() {
     intervalRef.current = setInterval(async () => {
       const detections = await faceapi
         .detectAllFaces(video, new faceapi.SsdMobilenetv1Options())
+        // .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()
         .withFaceExpressions()
         .withAgeAndGender();

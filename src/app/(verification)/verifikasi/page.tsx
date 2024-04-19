@@ -1,118 +1,160 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { Button } from '@/components/ui/button';
-
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import * as faceapi from '@vladmandic/face-api';
 
-import selfie from 'public/img/selfie.webp';
-import idCard from 'public/img/id-card.png';
-
 export default function VerifikasiPage() {
-  const idCardRef = useRef<HTMLImageElement>(null);
-  const selfieRef = useRef<HTMLImageElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const webcamRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const isFirstRender = useRef<boolean>(true);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [matches, setMatches] = useState<string>('');
 
-  const renderFace = async (
-    image: HTMLImageElement,
-    x: number,
-    y: number,
-    width: number,
-    height: number
-  ) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext('2d');
-
-    context?.drawImage(image, x, y, width, height, 0, 0, width, height);
-    canvas.toBlob((blob) => {
-      if (blob) {
-        image.src = URL.createObjectURL(blob);
-      }
-    }, 'image/jpeg');
+  const startVideo = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: false })
+      .then((stream) => {
+        if (webcamRef.current) {
+          webcamRef.current.srcObject = stream;
+        }
+      })
+      .catch((err) => console.error(err));
   };
 
   useEffect(() => {
-    // Prevent the function from executing on the first render
-    if (isFirstRender.current) {
-      isFirstRender.current = false; // toggle flag after first render/mounting
+    // loading the models
+    const loadModels = async () => {
+      await Promise.all([
+        faceapi.nets.ssdMobilenetv1.loadFromUri('models'),
+        faceapi.nets.tinyFaceDetector.loadFromUri('models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('models'),
+        faceapi.nets.faceExpressionNet.loadFromUri('models'),
+        faceapi.nets.ageGenderNet.loadFromUri('models'),
+      ]);
+    };
+
+    startVideo();
+    loadModels();
+
+    intervalRef.current = setInterval(() => {
+      detectFaces();
+    }, 500);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+  const detectFaces = async () => {
+    const canvas = canvasRef.current!;
+    const image = imageRef.current!;
+    const webcam = webcamRef.current!;
+
+    // if (image) {
+    //   // Fetch an image from a valid URL
+    //   const imageUrl =
+    //     'https://images.unsplash.com/photo-1713145872144-351db3748385?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; // Replace this with the URL of the image you want to fetch
+    //   const fetchedImage = await faceapi.fetchImage(imageUrl);
+    //   // Set the src of the image element
+    //   image.src = fetchedImage.src;
+    // }
+
+    const detections = await faceapi
+      .detectAllFaces(webcam, new faceapi.SsdMobilenetv1Options())
+      .withFaceLandmarks()
+      .withFaceExpressions()
+      .withAgeAndGender();
+
+    console.log(detections);
+
+    detections.forEach((detection) => {
+      if (detection.expressions.surprised > 0.5) {
+        console.log('you open mouth');
+      }
+    });
+
+    const displaySize = {
+      width: webcam.width,
+      height: webcam.height,
+    };
+
+    faceapi.matchDimensions(canvas, displaySize);
+
+    const resizedDetections = faceapi.resizeResults(detections, displaySize);
+
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      faceapi.draw.drawDetections(canvas, resizedDetections);
+      faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+      faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
+
+      resizedDetections.forEach((result) => {
+        const { age, gender, genderProbability } = result;
+        new faceapi.draw.DrawTextField(
+          [
+            `${Math.round(age)} Tahun`,
+            `${gender} ${Math.round(genderProbability * 100)}%`,
+          ],
+          result.detection.box.bottomRight
+        ).draw(canvas);
+      });
+    }
+
+    // ID card and selfie face detection
+    const imageFaceDetection = await faceapi
+      .detectSingleFace(image, new faceapi.TinyFaceDetectorOptions())
+      .withFaceLandmarks()
+      .withFaceDescriptor();
+
+    const webcamFaceDetection = await faceapi
+      .detectSingleFace(webcam, new faceapi.TinyFaceDetectorOptions())
+      .withFaceLandmarks()
+      .withFaceDescriptor();
+
+    if (!imageFaceDetection || !webcamFaceDetection) {
+      setMatches('no face detected');
       return;
     }
 
-    (async () => {
-      // loading the models
-      await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
-      await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-      await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
-      await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
-      await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+    if (imageFaceDetection && webcamFaceDetection) {
+      const distance = faceapi.euclideanDistance(
+        imageFaceDetection.descriptor,
+        webcamFaceDetection.descriptor
+      );
+      console.log('Face comparison distance:', distance);
 
-      // detect a single face from the ID card image
-      const idCardFacedetection = await faceapi
-        .detectSingleFace(
-          idCardRef.current!,
-          new faceapi.TinyFaceDetectorOptions()
-        )
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-      // detect a single face from the selfie image
-      const selfieFacedetection = await faceapi
-        .detectSingleFace(
-          selfieRef.current!,
-          new faceapi.TinyFaceDetectorOptions()
-        )
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-      /**
-       * If a face was detected from the selfie image,
-       * call our renderFace() method to display the detected face.
-       */
-      if (selfieFacedetection) {
-        const { x, y, width, height } = selfieFacedetection.detection.box;
-        renderFace(selfieRef.current!, x, y, width, height);
+      if (distance < 0.5) {
+        setMatches('Face matches!');
+      } else {
+        setMatches('Face does not match!');
       }
-
-      /**
-       * Do face comparison only when faces were detected
-       */
-      if (idCardFacedetection && selfieFacedetection) {
-        // Using Euclidean distance to compare face descriptions
-        const distance = faceapi.euclideanDistance(
-          idCardFacedetection.descriptor,
-          selfieFacedetection.descriptor
-        );
-        console.log(distance);
-      }
-    })();
-  }, []);
+    }
+  };
 
   return (
-    <section>
+    <div className='flex flex-col h-full items-center justify-center'>
       <div>
-        <img
-          ref={idCardRef}
-          src='/img/id-card.png'
-          alt='ID card'
-          height='auto'
-        />
+        <canvas ref={canvasRef} className='absolute'></canvas>
+        <video ref={webcamRef} autoPlay muted height={480} width={640}></video>
       </div>
 
+      <p>{matches}</p>
       <div>
         <img
-          ref={selfieRef}
-          src='/img/selfie.webp'
+          ref={imageRef}
+          src='/img/gustam.jpg'
           alt='Selfie'
-          height='auto'
+          className='h-auto w-80 hidden'
         />
       </div>
-    </section>
+    </div>
   );
 }
