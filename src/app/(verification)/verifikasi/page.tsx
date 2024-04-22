@@ -2,16 +2,19 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
+
 import * as faceapi from '@vladmandic/face-api';
+import { useRouter } from 'next/navigation';
 
 export default function VerifikasiPage() {
+  const router = useRouter();
   const imageRef = useRef<HTMLImageElement>(null);
-
   const webcamRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // const [time, setTime] = useState<number>(10);
   const [matches, setMatches] = useState<string>('');
 
   const startVideo = () => {
@@ -24,33 +27,6 @@ export default function VerifikasiPage() {
       })
       .catch((err) => console.error(err));
   };
-
-  useEffect(() => {
-    // loading the models
-    const loadModels = async () => {
-      await Promise.all([
-        faceapi.nets.ssdMobilenetv1.loadFromUri('models'),
-        faceapi.nets.tinyFaceDetector.loadFromUri('models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('models'),
-        faceapi.nets.faceRecognitionNet.loadFromUri('models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('models'),
-        faceapi.nets.ageGenderNet.loadFromUri('models'),
-      ]);
-    };
-
-    startVideo();
-    loadModels();
-
-    intervalRef.current = setInterval(() => {
-      detectFaces();
-    }, 500);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
 
   const detectFaces = async () => {
     const canvas = canvasRef.current!;
@@ -72,13 +48,11 @@ export default function VerifikasiPage() {
       .withFaceExpressions()
       .withAgeAndGender();
 
-    console.log(detections);
+    // console.log(detections);
 
-    detections.forEach((detection) => {
-      if (detection.expressions.surprised > 0.5) {
-        console.log('you open mouth');
-      }
-    });
+    if (detections.length === 0) {
+      setMatches('No face detected');
+    }
 
     const displaySize = {
       width: webcam.width,
@@ -90,6 +64,7 @@ export default function VerifikasiPage() {
     const resizedDetections = faceapi.resizeResults(detections, displaySize);
 
     const context = canvas.getContext('2d');
+
     if (context) {
       context.clearRect(0, 0, canvas.width, canvas.height);
       faceapi.draw.drawDetections(canvas, resizedDetections);
@@ -108,7 +83,6 @@ export default function VerifikasiPage() {
       });
     }
 
-    // ID card and selfie face detection
     const imageFaceDetection = await faceapi
       .detectSingleFace(image, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
@@ -119,25 +93,70 @@ export default function VerifikasiPage() {
       .withFaceLandmarks()
       .withFaceDescriptor();
 
-    if (!imageFaceDetection || !webcamFaceDetection) {
-      setMatches('no face detected');
-      return;
-    }
-
     if (imageFaceDetection && webcamFaceDetection) {
       const distance = faceapi.euclideanDistance(
         imageFaceDetection.descriptor,
         webcamFaceDetection.descriptor
       );
+
       console.log('Face comparison distance:', distance);
 
-      if (distance < 0.5) {
-        setMatches('Face matches!');
+      const userOpenMouth = detections.some(
+        (detection) => detection.expressions.surprised > 0.6
+      );
+
+      if (userOpenMouth && distance < 0.55) {
+        setMatches('sukses');
+        router.push('/opening-ujian ');
+      } else if (distance < 0.55) {
+        setMatches('please open your mouth!');
       } else {
         setMatches('Face does not match!');
       }
     }
   };
+
+  useEffect(() => {
+    // loading the models
+    const loadModels = async () => {
+      await Promise.all([
+        faceapi.nets.ssdMobilenetv1.loadFromUri('models'),
+        faceapi.nets.tinyFaceDetector.loadFromUri('models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('models'),
+        faceapi.nets.faceExpressionNet.loadFromUri('models'),
+        faceapi.nets.ageGenderNet.loadFromUri('models'),
+      ]);
+    };
+
+    startVideo();
+    loadModels();
+
+    intervalRef.current = setInterval(() => {
+      detectFaces();
+    }, 100);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     setTime((prevTime) => {
+  //       if (prevTime <= 0) {
+  //         clearInterval(intervalId);
+  //         return 0;
+  //       }
+  //       return prevTime - 1;
+  //     });
+  //   }, 1000);
+
+  //   // Bersihkan interval ketika komponen di-unmount
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   return (
     <div className='flex flex-col h-full items-center justify-center'>
@@ -146,7 +165,9 @@ export default function VerifikasiPage() {
         <video ref={webcamRef} autoPlay muted height={480} width={640}></video>
       </div>
 
-      <p>{matches}</p>
+      {matches && <p>{matches}</p>}
+      {/* <p>Waktu yang tersisa: {time} detik</p> */}
+
       <div>
         <img
           ref={imageRef}
