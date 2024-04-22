@@ -5,9 +5,9 @@ export default function PilihUjianPage() {
   return (
     <Container className='my-6 '>
       <div className='flex justify-between items-center gap-x-10 '>
-        <CardUjian />
-        <CardUjian />
-        <CardUjian />
+        <CardUjian redirect='/verification' />
+        <CardUjian redirect='/verification' />
+        <CardUjian redirect='/verification' />
       </div>
     </Container>
   );

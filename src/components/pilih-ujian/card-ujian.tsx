@@ -10,7 +10,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function CardUjian() {
+export default function CardUjian({ redirect }: { redirect: string }) {
   return (
     <Card className='w-[350px] hover:-translate-y-2  transform transition-all '>
       <CardHeader className='p-0'>
@@ -32,7 +32,7 @@ export default function CardUjian() {
       </CardContent>
       <CardFooter className='mt-2'>
         <Button asChild>
-          <Link href='/verifikasi'>Daftar</Link>
+          <Link href={redirect}>Daftar</Link>
         </Button>
       </CardFooter>
     </Card>
