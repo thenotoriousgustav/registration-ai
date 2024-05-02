@@ -3,14 +3,19 @@ import Link from 'next/link';
 import Container from '@/components/container';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import Vad from '@/components/vad';
 
-export default function Home() {
+export default async function Home() {
+  // const isAuthenticated = cookies().has('token');
+  // const token = cookies().get('token')?.value;
+
   return (
     <Container className='my-6 '>
       <div className='flex items-center mb-14'>
         <Avatar>
           <AvatarImage src='https://github.com/thenotoriousgustav.png' />
           <AvatarFallback>Gustam Rheza</AvatarFallback>
+          {/* <p>{profile?.username}</p> */}
         </Avatar>
         <h1 className='text-xl ml-4'>Home Page</h1>
       </div>

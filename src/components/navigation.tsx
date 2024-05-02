@@ -1,13 +1,10 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -17,8 +14,15 @@ import Container from './container';
 import { TextAlignJustifyIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { Separator } from './ui/separator';
+import { useRouter } from 'next/navigation';
 
 export default function Navigation() {
+  const router = useRouter();
+
+  const handleGoogleLogin = async () => {
+    router.push('http://localhost:3001/auth/google/login');
+  };
+
   return (
     <Container className='border-b py-6'>
       <nav className='flex justify-between'>
@@ -54,7 +58,7 @@ export default function Navigation() {
           </SheetContent>
         </Sheet>
         <div>
-          <Button>Sign Out</Button>
+          <Button onClick={handleGoogleLogin}>Sign In</Button>
         </div>
       </nav>
     </Container>
