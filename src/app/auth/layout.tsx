@@ -31,9 +31,6 @@ export default function UserLayout({
           <Navigation />
         </header>
         <main className='flex-grow'>{children}</main>
-        <footer className='bg-secondary w-full'>
-          <Footer />
-        </footer>
       </body>
     </html>
   );
