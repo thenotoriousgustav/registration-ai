@@ -32,10 +32,11 @@ export default function CardUjian({ redirect }: { redirect: string }) {
         </CardDescription>
       </CardContent>
       <CardFooter className="mt-2">
-        {/* <Button asChild>
+        <Button asChild>
           <Link href={redirect}>Daftar</Link>
-        </Button> */}
-        <DialogUjian />
+        </Button>
+        {/* <Butt></Butt> */}
+        {/* <DialogUjian /> */}
       </CardFooter>
     </Card>
   );
