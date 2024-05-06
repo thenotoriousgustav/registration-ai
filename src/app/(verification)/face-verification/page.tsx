@@ -1,6 +1,6 @@
-import FaceVerificationComp from '@/components/face-verification-comp';
+import FaceVerificationComp from "@/components/face-verification-comp";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function VerifikasiPage() {
   return (
