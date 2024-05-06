@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { redirect, useRouter } from 'next/navigation';
-import { deleteSession } from '@/lib/session';
+import { Button } from "@/components/ui/button";
+import { redirect, useRouter } from "next/navigation";
+import { deleteSession } from "@/lib/session";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -22,10 +22,8 @@ export function AuthButton({ session }: { session: any }) {
   return (
     <div>
       {session ? (
-        // Jika pengguna sudah login, tampilkan tombol "Log out"
         <Button onClick={handleLogout}>Log out</Button>
       ) : (
-        // Jika pengguna belum login, tampilkan tombol "Log in"
         <Button onClick={handleLogin}>Log in</Button>
       )}
     </div>
