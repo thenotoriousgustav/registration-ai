@@ -23,11 +23,7 @@
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
-<<<<<<< HEAD
-    "shadcn-ui": "^0.8.0",
-=======
     "react-hook-form": "^7.51.4",
->>>>>>> d3b257a20d656605fe48fb95978ae67973466f0e
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.6"
