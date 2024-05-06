@@ -2,6 +2,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { NextRequest, NextResponse } from "next/server";
 
 const secretKey = process.env.SESSION_SECRET || "secret";
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -44,7 +45,7 @@ export async function createSession(accessToken: string) {
   });
 }
 
-export async function updateSession() {
+export async function updateSession(req: NextRequest) {
   const session = cookies().get("session")?.value;
   const payload = await decrypt(session);
 
@@ -53,8 +54,9 @@ export async function updateSession() {
   }
 
   const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const res = NextResponse.next();
 
-  cookies().set("session", session, {
+  res.cookies.set("session", session, {
     httpOnly: true,
     secure: true,
     expires: expires,
