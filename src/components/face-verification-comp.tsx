@@ -1,13 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import * as faceapi from '@vladmandic/face-api';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useEffect, useRef, useState } from "react";
+import * as faceapi from "@vladmandic/face-api";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-import { RocketIcon } from '@radix-ui/react-icons';
+import { RocketIcon } from "@radix-ui/react-icons";
 
 export default function FaceVerificationComp() {
   const router = useRouter();
@@ -18,18 +18,18 @@ export default function FaceVerificationComp() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [matches, setMatches] = useState<string>('');
+  const [matches, setMatches] = useState<string>("");
 
   useEffect(() => {
     // load models
     const loadModels = async () => {
       await Promise.all([
-        faceapi.nets.ssdMobilenetv1.loadFromUri('models'),
-        faceapi.nets.tinyFaceDetector.loadFromUri('models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('models'),
-        faceapi.nets.faceRecognitionNet.loadFromUri('models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('models'),
-        faceapi.nets.ageGenderNet.loadFromUri('models'),
+        faceapi.nets.ssdMobilenetv1.loadFromUri("models"),
+        faceapi.nets.tinyFaceDetector.loadFromUri("models"),
+        faceapi.nets.faceLandmark68Net.loadFromUri("models"),
+        faceapi.nets.faceRecognitionNet.loadFromUri("models"),
+        faceapi.nets.faceExpressionNet.loadFromUri("models"),
+        faceapi.nets.ageGenderNet.loadFromUri("models"),
       ]);
     };
 
@@ -52,13 +52,14 @@ export default function FaceVerificationComp() {
       const webcam = webcamRef.current!;
 
       const detection = await faceapi
-        .detectSingleFace(webcam, new faceapi.SsdMobilenetv1Options())
+        // .detectSingleFace(webcam, new faceapi.SsdMobilenetv1Options())
+        .detectSingleFace(webcam, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()
         .withFaceExpressions()
         .withAgeAndGender();
 
       if (!detection) {
-        setMatches('No face detected');
+        setMatches("No face detected");
         return;
       }
 
@@ -71,7 +72,7 @@ export default function FaceVerificationComp() {
 
       const resizedDetections = faceapi.resizeResults([detection], displaySize);
 
-      const context = canvas.getContext('2d');
+      const context = canvas.getContext("2d");
 
       if (context) {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -129,14 +130,14 @@ export default function FaceVerificationComp() {
         ) {
           setIsSuccess(true);
 
-          setMatches('Face match!');
+          setMatches("Face match!");
           setTimeout(() => {
-            router.push('/opening-exam');
+            router.push("/opening-exam");
           }, 1000);
         } else if (distance < 0.55) {
-          setMatches('Please open your mouth!');
+          setMatches("Please open your mouth!");
         } else {
-          setMatches('Face does not match!');
+          setMatches("Face does not match!");
         }
       }
     };
@@ -157,34 +158,34 @@ export default function FaceVerificationComp() {
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success('Face Match!');
+      toast.success("Face Match!");
     }
   }, [isSuccess]);
   return (
-    <div className='flex flex-col h-full items-center justify-center'>
+    <div className="flex flex-col h-full items-center justify-center">
       <div>
-        <canvas ref={canvasRef} className='absolute'></canvas>
+        <canvas ref={canvasRef} className="absolute"></canvas>
         <video
           ref={webcamRef}
           autoPlay
           muted
           height={480}
           width={640}
-          className='rounded-md shadow-lg'
+          className="rounded-md shadow-lg"
         ></video>
       </div>
 
       <div>
         <img
           ref={imageRef}
-          src='/img/ktp-gustam.jpg'
-          alt='Selfie'
-          className='h-auto w-80 hidden'
+          src="/img/ali2.jpg"
+          alt="Selfie"
+          className="h-auto w-80 hidden"
         />
       </div>
 
-      <Alert className='mt-6 py-4 flex flex-row justify-start items-center space-x-10 '>
-        <RocketIcon className='h-4 w-4' />
+      <Alert className="mt-6 py-4 flex flex-row justify-start items-center space-x-10 ">
+        <RocketIcon className="h-4 w-4" />
         <div>
           <AlertTitle>{matches}</AlertTitle>
           <AlertDescription>
