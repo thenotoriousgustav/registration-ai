@@ -7,11 +7,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
+import { useAppContext } from "@/lib/ContextProvider";
 import Image from "next/image";
-import { DialogUjian } from "./dialog-ujian";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function CardUjian({ redirect }: { redirect: string }) {
+interface ExamType {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  reg_start: Date;
+  reg_end: Date;
+  status: boolean;
+}
+
+export default function CardUjian({
+  exam,
+}: {
+  exam: ExamType;
+  redirect: string;
+}) {
+  const { examId, setExamId } = useAppContext();
+  const router = useRouter();
+  useEffect(() => {
+    if (examId) {
+      console.log(examId);
+      router.push("/take-photo");
+    }
+  }, [examId]);
+
+  const handleDaftar = () => {
+    setExamId(exam.id);
+  };
   return (
     <Card className="w-[350px] hover:-translate-y-2  transform transition-all ">
       <CardHeader className="p-0">
@@ -25,18 +53,14 @@ export default function CardUjian({ redirect }: { redirect: string }) {
         />
       </CardHeader>
       <CardContent className="pt-6">
-        <CardTitle className="text-xl font-semibold">Lorem, ipsum.</CardTitle>
+        <CardTitle className="text-xl font-semibold">{exam.title}</CardTitle>
         <CardDescription className="mt-2">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet corporis
           illo enim aspernatur odio earum.
         </CardDescription>
       </CardContent>
       <CardFooter className="mt-2">
-        <Button asChild>
-          <Link href={redirect}>Daftar</Link>
-        </Button>
-        {/* <Butt></Butt> */}
-        {/* <DialogUjian /> */}
+        <Button onClick={handleDaftar}>Daftar</Button>
       </CardFooter>
     </Card>
   );

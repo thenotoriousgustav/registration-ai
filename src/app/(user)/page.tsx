@@ -1,9 +1,11 @@
+"use client";
 import Link from "next/link";
-
 import Container from "@/components/container";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/session";
+import { useToast } from "@/components/ui/use-toast";
+import { useEffect, useState } from "react";
 
 async function getProfile() {
   try {
@@ -20,7 +22,6 @@ async function getProfile() {
       });
 
       if (!res.ok) {
-        // Log error and return null or fallback value
         console.error("Failed to fetch profile data:", res.statusText);
         return null;
       }
@@ -36,8 +37,28 @@ async function getProfile() {
   }
 }
 
-export default async function Home() {
-  const profile = await getProfile();
+export default function Home() {
+  const { toast } = useToast();
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const profileData = await getProfile();
+      setProfile(profileData);
+    };
+
+    fetchProfile();
+
+    const message = localStorage.getItem("message");
+    if (message) {
+      toast({
+        variant: "default",
+        title: "Notification!🔔",
+        description: message,
+      });
+      localStorage.removeItem("message");
+    }
+  }, []);
 
   return (
     <Container className="my-6 ">
