@@ -1,24 +1,8 @@
 "use client";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+
 import {
   Select,
   SelectContent,
@@ -26,14 +10,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import Image from "next/image";
-import { useEffect } from "react";
 
-const agamaData = [
+const religions = [
   "islam",
   "kristen protestan",
   "katolik",
@@ -47,234 +36,280 @@ export default function RegistrationForm({
   handleSubmit,
   setStep,
 }: any) {
+  const handleIdCardChange = () => {
+    setFormValue((prev: any) => ({ ...prev, idCard: null, idCardType: null }));
+    setStep("2");
+  };
+
+  const handlePhotoChange = () => {
+    setFormValue((prev: any) => ({ ...prev, photo: null }));
+    setStep("1");
+  };
+
   return (
-    <div
-      className="flex w-full h-screen
-     justify-center items-center py-10"
-    >
+    <Card className="flex flex-col w-full h-full p-0">
       <form
         onSubmit={handleSubmit}
-        className="w-full h-full flex items-center justify-center"
+        className="w-full h-full flex flex-col px-5 pt-2 gap-y-2  "
         encType="multipart/form-data"
       >
-        <Card className="w-full h-full ">
-          <CardHeader className="">
-            <CardTitle className=" text-center text-3xl font-bold ">
-              Formulir Ujian
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-y-4 ">
-            {/* foto ktp
-            <div className=" flex flex-row gap-x-3">
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="ktp">KTP:</Label>
-              </div>
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="photo">Foto</Label>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline">Lihat Foto</Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <div className="grid gap-4 py-4">
-                      {photo && (
-                        <Image
-                          id="photo"
-                          src={photo}
-                          width={100}
-                          height={100}
-                          alt="photo"
-                          className="w-auto h-auto"
-                        />
-                      )}
-                    </div>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button type="button" variant="outline">
-                          Tutup
-                        </Button>
-                      </DialogClose>
-                      <Button type="submit">Ganti Foto</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </div> */}
+        <h1 className="text-3xl font-bold text-center mb-1">
+          Formulir Pendaftaran
+        </h1>
 
-            {/* nama nik */}
-            <div className=" flex flex-row gap-x-3">
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="name">Nama :</Label>
-                <Input
-                  onChange={(e) =>
-                    setFormValue((prev: any) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                  value={formValue.name}
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="Gustam Mahendra"
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="name">NIK (16 digit) :</Label>
-                <Input
-                  onChange={(e) =>
-                    setFormValue((prev: any) => ({
-                      ...prev,
-                      NIK: e.target.value,
-                    }))
-                  }
-                  value={formValue.NIK}
-                  type="text"
-                  id="nik"
-                  name="nik"
-                  placeholder="3171234567890123"
-                />
-              </div>
-            </div>
+        {/* idCard photo */}
+        <div className=" flex flex-row gap-x-3">
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="ktp">Identity Card :</Label>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Show {formValue.idCardType}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <div className="grid gap-4 py-4">
+                  {formValue.idCard && (
+                    <Image
+                      id="ktp"
+                      src={formValue.idCard}
+                      width={100}
+                      height={100}
+                      alt="photo"
+                      className="w-auto h-auto"
+                    />
+                  )}
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline">
+                      Close
+                    </Button>
+                  </DialogClose>
+                  <Button onClick={handleIdCardChange}>Change File</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="photo">Picture :</Label>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Show Picture
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <div className="grid gap-4 py-4">
+                  {formValue.photo && (
+                    <Image
+                      id="photo"
+                      src={formValue.photo}
+                      width={100}
+                      height={100}
+                      alt="photo"
+                      className="w-auto h-auto"
+                    />
+                  )}
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline">
+                      Tutup
+                    </Button>
+                  </DialogClose>
+                  <Button onClick={handlePhotoChange}>Change Picture</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
 
-            {/* dob pob */}
-            <div className="flex flex-row gap-x-3">
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="pob">Tempat Lahir :</Label>
-                <Input
-                  onChange={(e) =>
-                    setFormValue((prev: any) => ({
-                      ...prev,
-                      pob: e.target.value,
-                    }))
-                  }
-                  value={formValue.dob}
-                  type="text"
-                  id="pob"
-                  name="pob"
-                  placeholder="Bekasi"
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="dob">Tanggal Lahir :</Label>
-                <Input
-                  onChange={(e) =>
-                    setFormValue((prev: any) => ({
-                      ...prev,
-                      dob: e.target.value,
-                    }))
-                  }
-                  value={formValue.pob}
-                  type="date"
-                  id="dob"
-                  name="dob"
-                  placeholder=""
-                />
-              </div>
-            </div>
+        {/* nik idCardType */}
+        <div className=" flex flex-row gap-x-3">
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="nik">NIK (16 digit) :</Label>
+            <Input
+              onChange={(e) =>
+                setFormValue((prev: any) => ({
+                  ...prev,
+                  NIK: e.target.value,
+                }))
+              }
+              defaultValue={formValue.nik}
+              type="text"
+              id="nik"
+              name="nik"
+              placeholder="3171234567890123"
+            />
+          </div>
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="id_type">Type of Identity Card :</Label>
+            <Input
+              value={formValue.idCardType}
+              readOnly
+              type="text"
+              id="id_type"
+              name="id_type"
+            />
+          </div>
+        </div>
 
-            {/* gender agama */}
-            <div className="flex flex-row gap-x-3">
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="gender">Jenis Kelamin :</Label>
-                <Select
-                  name="gender"
-                  value={formValue.gender}
-                  onValueChange={(value: string) =>
-                    setFormValue((prev: any) => ({
-                      ...prev,
-                      gender: value,
-                    }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pria">Pria</SelectItem>
-                    <SelectItem value="wanita">wanita</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        {/* nama city */}
+        <div className=" flex flex-row gap-x-3">
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="name">Name :</Label>
+            <Input
+              onChange={(e) =>
+                setFormValue((prev: any) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+              value={formValue.name}
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Gustam Mahendra"
+            />
+          </div>
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="city">City :</Label>
+            <Input
+              onChange={(e) =>
+                setFormValue((prev: any) => ({
+                  ...prev,
+                  city: e.target.value,
+                }))
+              }
+              value={formValue.city}
+              type="text"
+              id="city"
+              name="city"
+              placeholder="Bekasi"
+            />
+          </div>
+        </div>
 
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="agama">Agama :</Label>
-                <Select
-                  name="agama"
-                  value={formValue.religion}
-                  onValueChange={(value: string) =>
-                    setFormValue((prev: any) => ({
-                      ...prev,
-                      religion: value,
-                    }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {agamaData.map((agama) => (
-                      <SelectItem
-                        className="capitalize"
-                        key={agama}
-                        value={agama}
-                      >
-                        {agama}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+        {/* dob pob */}
+        <div className="flex flex-row gap-x-3">
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="pob">Place of Birth :</Label>
+            <Input
+              onChange={(e) =>
+                setFormValue((prev: any) => ({
+                  ...prev,
+                  pob: e.target.value,
+                }))
+              }
+              value={formValue.pob}
+              type="text"
+              id="pob"
+              name="pob"
+              placeholder="Bekasi"
+            />
+          </div>
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="dob">Date of Birth :</Label>
+            <Input
+              onChange={(e) => {
+                setFormValue((prev: any) => ({
+                  ...prev,
+                  dob: e.target.value,
+                }));
+              }}
+              value={formValue.dob}
+              type="date"
+              id="dob"
+              name="dob"
+              data-date-format="DD MM YYYY"
+            />
+          </div>
+        </div>
 
-            {/* kota alamat */}
-            <div className="flex flex-row gap-x-3">
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="name">Kota :</Label>
-                <Input
-                  onChange={(e) =>
-                    setFormValue((prev: any) => ({
-                      ...prev,
-                      city: e.target.value,
-                    }))
-                  }
-                  value={formValue.city}
-                  type="text"
-                  id="kota"
-                  name="kota"
-                  placeholder="Bekasi"
-                />
-              </div>
-            </div>
+        {/* gender agama */}
+        <div className="flex flex-row gap-x-3">
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="gender">Gender :</Label>
+            <Select
+              name="gender"
+              value={formValue.gender}
+              onValueChange={(value: string) =>
+                setFormValue((prev: any) => ({
+                  ...prev,
+                  gender: value,
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Choose" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="LAKI-LAKI">Male</SelectItem>
+                <SelectItem value="PEREMPUAN">Female</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col space-y-1.5 flex-1">
+            <Label htmlFor="religion">Religion :</Label>
+            <Select
+              name="religion"
+              value={formValue.religion}
+              // defaultValue={formValue.gender == "ISLAM " ? "islam" : ""}
+              onValueChange={(value: string) =>
+                setFormValue((prev: any) => ({
+                  ...prev,
+                  religion: value,
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Choose" />
+              </SelectTrigger>
+              <SelectContent>
+                {religions.map((religion) => (
+                  <SelectItem
+                    className="capitalize"
+                    key={religion}
+                    value={religion}
+                  >
+                    {religion}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-            {/* address */}
-            <div className="flex flex-row gap-x-3 ">
-              <div className="flex flex-col space-y-1.5 flex-1 ">
-                <Label htmlFor="address">Alamat :</Label>
-                <Textarea
-                  value={formValue.address}
-                  onChange={(e) =>
-                    setFormValue((prev: any) => ({
-                      ...prev,
-                      address: e.target.value,
-                    }))
-                  }
-                  rows={3}
-                  id="address"
-                  name="adress"
-                  placeholder="Jl. Merpati Putih, No 29, RW.03/RT.02"
-                />
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-end gap-x-5">
-            <Button onClick={() => setStep("2")} variant="outline">
-              back
-            </Button>
-            <Button type="submit">Daftar</Button>
-          </CardFooter>
-        </Card>
+        {/* address */}
+        <div className="flex flex-row gap-x-3 ">
+          <div className="flex flex-col space-y-1.5 flex-1 ">
+            <Label htmlFor="address">Address :</Label>
+            <Textarea
+              value={formValue.address}
+              onChange={(e) =>
+                setFormValue((prev: any) => ({
+                  ...prev,
+                  address: e.target.value,
+                }))
+              }
+              rows={1}
+              id="address"
+              name="adress"
+              placeholder="Jl. Merpati Putih, No 29, RW.03/RT.02"
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center pt-1 px-2">
+          <Button onClick={() => setStep("2")} variant="outline">
+            previous
+          </Button>
+          <Button type="submit" className="w-24">
+            submit
+          </Button>
+        </div>
       </form>
-    </div>
+    </Card>
   );
 }

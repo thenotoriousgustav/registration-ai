@@ -28,16 +28,10 @@ export default function CardUjian({
   exam: ExamType;
   redirect: string;
 }) {
-  const { examId, setExamId } = useAppContext();
   const router = useRouter();
-  useEffect(() => {
-    if (examId) {
-      router.push("/form-applicant");
-    }
-  }, [examId]);
 
   const handleDaftar = () => {
-    setExamId(exam.id);
+    router.push(`/form-applicant/${exam.id}`);
   };
   return (
     <Card className="w-[350px] hover:-translate-y-2  transform transition-all ">

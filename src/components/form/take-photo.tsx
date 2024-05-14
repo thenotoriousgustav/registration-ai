@@ -4,33 +4,14 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAppContext } from "@/lib/ContextProvider";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-export default function TakePhoto({ photo, setPhoto, setStep }: any) {
+export default function TakePhoto({ formValue, setFormValue, setStep }: any) {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    if (photo) {
-      console.log("31", photo);
-    }
-  }, [photo]);
 
   useEffect(() => {
     const getMedia = async () => {
@@ -53,7 +34,7 @@ export default function TakePhoto({ photo, setPhoto, setStep }: any) {
         });
       }
     };
-  }, []);
+  }, [formValue.photo]);
 
   useEffect(() => {
     if (stream && videoRef.current) {
@@ -71,31 +52,38 @@ export default function TakePhoto({ photo, setPhoto, setStep }: any) {
       if (ctx) {
         ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL("image/png");
-        setPhoto(dataUrl);
-        setIsOpen(true);
+        setFormValue((prev: any) => ({ ...prev, photo: dataUrl }));
       }
     }
   };
 
-  const handleCancel = () => {
-    setPhoto(null);
-    setIsOpen(false);
-  };
-
   return (
     <Card className="w-full h-full  p-4 ">
-      <CardHeader className="p-2 h-auto ">
-        <CardTitle className="text-3xl font-bold text-center">
-          Foto Wajah
-        </CardTitle>
-        <CardDescription className="text-center">
-          Silahkan foto wajah anda sesuai dengan tempatnya.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="w-full h-[300px]  flex flex-col  items-center  ">
-        {!photo && (
+      <CardContent className="w-full h-full flex flex-col  items-center ">
+        {!formValue.photo ? (
           <>
-            <div className="rounded-lg flex flex-col justify-center items-center mb-5 w-[400px] h-auto ">
+            <CardTitle className="text-3xl font-bold mb-1 text-center">
+              Take a Photo
+            </CardTitle>
+            <CardDescription className="text-center">
+              Please take a photo of your face according to the designated
+              place.
+            </CardDescription>
+          </>
+        ) : (
+          <>
+            <CardTitle className="text-3xl font-bold mb-1 text-center text-green-600">
+              Successfully take a photo
+            </CardTitle>
+            <CardDescription className="text-center">
+              Click the next button to proceed to the next step.
+            </CardDescription>
+          </>
+        )}
+
+        {!formValue.photo && (
+          <>
+            <div className="mt-6 rounded-lg flex flex-col justify-center items-center mb-5 w-[420px] h-auto">
               {stream ? (
                 <video
                   ref={videoRef}
@@ -104,58 +92,55 @@ export default function TakePhoto({ photo, setPhoto, setStep }: any) {
                   className="rounded-lg"
                 />
               ) : (
-                <p className="font-bold">Memuat kamera...</p>
+                <div className="h-[300px] font-bold flex justify-center items-center">
+                  <h1>Loading camera...</h1>
+                </div>
+              )}
+            </div>
+            {stream && (
+              <div>
+                <Button onClick={captureImage}>Ambil gambar</Button>
+              </div>
+            )}
+          </>
+        )}
+
+        {formValue.photo && (
+          <>
+            <div className="mt-6 rounded-lg flex flex-col justify-center items-center mb-2 w-[420px] h-auto ">
+              {formValue.photo && (
+                <Image
+                  id="ktp"
+                  src={formValue.photo}
+                  width={100}
+                  height={100}
+                  alt="photo"
+                  className="w-auto h-auto rounded-lg border-black/20 border-4 p-1"
+                />
               )}
             </div>
             <div>
-              <Button onClick={captureImage}>Ambil gambar</Button>
+              <Button
+                onClick={() =>
+                  setFormValue((prev: any) => ({ ...prev, photo: null }))
+                }
+                variant="link"
+                className="font-bold  w-[200px] "
+              >
+                Change Photo
+              </Button>
             </div>
           </>
         )}
 
-        {photo && (
-          <div className="mt-32 bg-green-200">
-            <Dialog defaultOpen={true}>
-              <DialogTrigger asChild>
-                <Button size="lg" className="font-bold">
-                  Lihat Foto
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <div className="grid gap-4 py-4">
-                  {photo && (
-                    <Image
-                      id="ktp"
-                      src={photo}
-                      width={100}
-                      height={100}
-                      alt="photo"
-                      className="w-auto h-auto"
-                    />
-                  )}
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button type="button" variant="outline">
-                      Tutup
-                    </Button>
-                  </DialogClose>
-                  <Button onClick={() => setPhoto(null)}>Ganti Foto</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-        )}
-        {/* </div> */}
+        <div className="mt-3 flex justify-end w-full">
+          {formValue.photo && (
+            <Button onClick={() => setStep("2")} className="w-24">
+              next
+            </Button>
+          )}
+        </div>
       </CardContent>
-
-      <CardFooter className=" flex items-center justify-end gap-x-5 p-0 pr-10">
-        {photo && (
-          <Button onClick={() => setStep("2")} variant="outline">
-            lanjutkan
-          </Button>
-        )}
-      </CardFooter>
     </Card>
   );
 }
