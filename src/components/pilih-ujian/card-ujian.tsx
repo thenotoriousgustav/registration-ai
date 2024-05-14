@@ -88,7 +88,7 @@ export default function CardUjian({ exam }: { exam: TExam }) {
           </Dialog>
         ) : status === "menunggu" ? null : status === "ditolak" ? null : (
           <Button asChild>
-            <Link href="/form-applicant">Daftar</Link>
+            <Link href={"/exam/" + exam.id}>Daftar</Link>
           </Button>
         )}
       </CardFooter>

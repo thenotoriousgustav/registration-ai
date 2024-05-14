@@ -1,8 +1,7 @@
 import Container from "@/components/container";
 import CardUjian from "@/components/pilih-ujian/card-ujian";
+import { getSession } from "@/lib/session";
 import { Suspense } from "react";
-
-const MOCK_API = process.env.NEXT_PUBLIC_MOCK_API;
 
 type TExam = {
   id: string;
@@ -15,16 +14,34 @@ type TExam = {
 };
 
 async function getExams() {
-  const response = await fetch(`${MOCK_API}/exam`);
+  try {
+    const session = await getSession();
+    const accessToken = session?.accessToken;
 
-  if (!response.ok) {
-    throw new Error("failed to fetch users");
+    console.log(accessToken);
+
+    if (accessToken) {
+      const res = await fetch("http://localhost:3001/admin/exams", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!res.ok) {
+        console.error("Failed to fetch exams data:", res.statusText);
+        return null;
+      }
+      return res.json();
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching exams data:", error);
+    return null;
   }
-
-  return await response.json();
 }
 
-export default async function PilihUjianPage() {
+export default async function ExamPage() {
   const exams = await getExams();
 
   return (

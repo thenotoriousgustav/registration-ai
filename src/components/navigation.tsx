@@ -57,8 +57,8 @@ export default async function Navigation() {
           </SheetTrigger>
           <SheetContent side="left">
             <SheetHeader>
-              <SheetTitle>CAT</SheetTitle>
-              <SheetDescription>Ini Navigasi Cat</SheetDescription>
+              <SheetTitle>Computer Assisted Test</SheetTitle>
+              {/* <SheetDescription>Ini Navigasi Cat</SheetDescription> */}
             </SheetHeader>
             <div className="flex flex-col items-start mt-10">
               <Button
@@ -73,7 +73,7 @@ export default async function Navigation() {
                 className="p-0 text-lg font-medium"
                 asChild
               >
-                <Link href="/pilih-ujian">Pilih Ujian</Link>
+                <Link href="/exam">Exam</Link>
               </Button>
             </div>
 

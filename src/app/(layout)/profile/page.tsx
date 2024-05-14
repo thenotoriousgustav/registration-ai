@@ -34,8 +34,6 @@ async function getProfile() {
 
 export default async function ProfilePage() {
   const profile = await getProfile();
-  const session = await getSession();
-  console.log(profile);
 
   return (
     <section>

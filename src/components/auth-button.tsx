@@ -58,14 +58,18 @@ export function AuthButton({ session, profile }: AuthButtonProps) {
           <DropdownMenuLabel>{profile.name}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              <Link href="/profile">Profile</Link>
+            <DropdownMenuItem asChild>
+              <Link href="/profile" className="cursor-pointer">
+                <User className="mr-2 h-4 w-4" />
+                Profile
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
-          <DropdownMenuItem>
-            <LogOut className="mr-2 h-4 w-4" />
-            <button onClick={handleLogout}>Log out</button>
+          <DropdownMenuItem asChild>
+            <button onClick={handleLogout} className="w-full cursor-pointer">
+              <LogOut className="mr-2 h-4 w-4" />
+              Log out
+            </button>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -74,7 +78,7 @@ export function AuthButton({ session, profile }: AuthButtonProps) {
 
   return (
     <div>
-      {session ? (
+      {session && profile ? (
         <Dropdown profile={profile} />
       ) : (
         <Button onClick={handleLogin}>Log in</Button>
