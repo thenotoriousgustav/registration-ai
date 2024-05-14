@@ -1,53 +1,42 @@
-"use client";
 import Container from "@/components/container";
 import CardUjian from "@/components/pilih-ujian/card-ujian";
-import axios, { AxiosError } from "axios";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Suspense } from "react";
 
-export default function PilihUjianPage() {
-  const MOCK_API = process.env.NEXT_PUBLIC_MOCK_API;
+const MOCK_API = process.env.NEXT_PUBLIC_MOCK_API;
 
-  // const queryClient = useQueryClient();
+type TExam = {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  reg_start: string;
+  reg_end: string;
+  status: boolean;
+};
 
-  const { data: exams, isLoading } = useQuery<any>({
-    queryKey: ["exam"],
-    queryFn: async () => {
-      try {
-        const res = await axios.get(`${MOCK_API}/exam`);
-        console.log(res);
-        return res.data;
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const axiosError = error as AxiosError<any>;
-          const res = axiosError.response;
-          console.log(res);
-          return [];
-        } else {
-          console.log("Unknown Error:", error);
-          return [];
-        }
-      }
-    },
-  });
+async function getExams() {
+  const response = await fetch(`${MOCK_API}/exam`);
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen ">
-        <h1 className="text-2xl font-bold mt-3">loading...</h1>
-      </div>
-    );
+  if (!response.ok) {
+    throw new Error("failed to fetch users");
   }
+
+  return await response.json();
+}
+
+export default async function PilihUjianPage() {
+  const exams = await getExams();
 
   return (
     <Container className="my-6">
-      <div className="flex justify-between items-center gap-x-10">
-        {exams.length > 0 ? (
-          exams.map((exam: any) => (
-            <CardUjian key={exam.id} exam={exam} redirect="/take-photo" />
-          ))
-        ) : (
-          <p>Tidak ada ujian tersedia</p>
-        )}
+      <div className="flex flex-wrap justify-center items-center gap-10">
+        <Suspense fallback={<p className="text-center text-5xl">Loading...</p>}>
+          {exams.length > 0 ? (
+            exams.map((exam: TExam) => <CardUjian key={exam.id} exam={exam} />)
+          ) : (
+            <p>Tidak ada ujian tersedia</p>
+          )}
+        </Suspense>
       </div>
     </Container>
   );
