@@ -2,58 +2,95 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAppContext } from "@/lib/ContextProvider";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
-interface ExamType {
+import Link from "next/link";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+
+type TExam = {
   id: string;
   title: string;
-  start: Date;
-  end: Date;
-  reg_start: Date;
-  reg_end: Date;
+  start: string;
+  end: string;
+  reg_start: string;
+  reg_end: string;
   status: boolean;
-}
+};
 
-export default function CardUjian({
-  exam,
-}: {
-  exam: ExamType;
-  redirect: string;
-}) {
-  const router = useRouter();
+export default function CardUjian({ exam }: { exam: TExam }) {
+  let status = "";
 
-  const handleDaftar = () => {
-    router.push(`/form-applicant/${exam.id}`);
-  };
   return (
-    <Card className="w-[350px] hover:-translate-y-2  transform transition-all ">
-      <CardHeader className="p-0">
-        <Image
-          src="/img/img-1.jpeg"
-          alt="asdas"
-          className="w-full rounded-md object-cover h-46"
-          width="0"
-          height="0"
-          sizes="100vw"
-        />
+    <Card className="w-[750px] hover:-translate-y-2  transform transition-all ">
+      <CardHeader className="">
+        <CardTitle className="text-2xl font-semibold">{exam.title}</CardTitle>
       </CardHeader>
-      <CardContent className="pt-6">
-        <CardTitle className="text-xl font-semibold">{exam.title}</CardTitle>
-        <CardDescription className="mt-2">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet corporis
-          illo enim aspernatur odio earum.
-        </CardDescription>
+      <CardContent className="text-lg flex justify-between items-center">
+        <div>
+          <h1>Pendaftaran Sampai:</h1>
+          <div>
+            <span>
+              {new Date(exam.reg_start).toLocaleDateString()} -{" "}
+              {new Date(exam.reg_end).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+        <div>
+          {status === "terdaftar" ? (
+            <h1>✅ Terdaftar</h1>
+          ) : status === "menunggu" ? (
+            <h1>⏳ Menunggu</h1>
+          ) : status === "ditolak" ? (
+            <h1>❌ Ditolak</h1>
+          ) : (
+            <h1>😭 Belum Terdaftar</h1>
+          )}
+        </div>
       </CardContent>
       <CardFooter className="mt-2">
-        <Button onClick={handleDaftar}>Daftar</Button>
+        {status === "terdaftar" ? (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Lihat Kartu Ujian</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{exam.title}</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </DialogDescription>
+              </DialogHeader>
+              <div>
+                <span>
+                  {new Date(exam.start).toLocaleTimeString()} -{" "}
+                  {new Date(exam.end).toLocaleTimeString()}
+                </span>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" asChild>
+                  <Link href="/">Mulai Ujian</Link>
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        ) : status === "menunggu" ? null : status === "ditolak" ? null : (
+          <Button asChild>
+            <Link href={"/exam/" + exam.id}>Daftar</Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
