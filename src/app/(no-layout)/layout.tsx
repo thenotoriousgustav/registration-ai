@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
-import Navigation from "@/components/navigation";
-import Footer from "@/components/footer";
 import { AppWrapper } from "@/lib/ContextProvider";
 import { Toaster } from "@/components/ui/toaster";
 import TanstackProvider from "@/lib/TanstackProvider";

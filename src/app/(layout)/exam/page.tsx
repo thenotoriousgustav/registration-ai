@@ -18,10 +18,8 @@ async function getExams() {
     const session = await getSession();
     const accessToken = session?.accessToken;
 
-    console.log(accessToken);
-
     if (accessToken) {
-      const res = await fetch("http://localhost:3001/admin/exams", {
+      const res = await fetch("http://localhost:3001/exams", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -29,21 +27,20 @@ async function getExams() {
 
       if (!res.ok) {
         console.error("Failed to fetch exams data:", res.statusText);
-        return null;
+        return [];
       }
       return res.json();
     } else {
-      return null;
+      return [];
     }
   } catch (error) {
     console.error("Error fetching exams data:", error);
-    return null;
+    return [];
   }
 }
 
 export default async function ExamPage() {
-  const exams = await getExams();
-
+  const { data: exams } = await getExams();
   return (
     <Container className="my-6">
       <div className="flex flex-wrap justify-center items-center gap-10">

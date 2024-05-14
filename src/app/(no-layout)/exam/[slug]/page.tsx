@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { IoIosArrowBack } from "react-icons/io";
 import RegistrationForm from "@/components/form/registration-form";
 import { dataURLtoBlob } from "@/lib/utils";
+import { getSession } from "@/lib/session";
 
 export default function FormApplicantData({
   params,
@@ -34,7 +35,10 @@ export default function FormApplicantData({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
-      console.log("77", formValue);
+      event.preventDefault();
+      const session = await getSession();
+      const accessToken = session?.accessToken;
+
       const photoData = await dataURLtoBlob(formValue.photo!);
       const idCardData = await dataURLtoBlob(formValue.idCard!);
 
@@ -42,29 +46,39 @@ export default function FormApplicantData({
         full_name: formValue.name,
         pob: formValue.pob,
         dob: formValue.dob,
+        religion: formValue.religion,
+        gender: formValue.religion,
+        address: formValue.address,
+        city: formValue.city,
       };
 
-      const userId = "COBA";
+      const filePhoto = new File([photoData], "picture.png", {
+        type: "image/png",
+      });
+      const fileIdCard = new File([idCardData], "id-card.png", {
+        type: "image/png",
+      });
 
       const applicantData = new FormData();
       applicantData.append("exam_id", params.slug);
-      applicantData.append("user_id", userId);
-      applicantData.append("id_card_no", formValue.nik);
-      applicantData.append("id_card_file", idCardData);
+      applicantData.append("name", formValue.name);
+      applicantData.append("photo", filePhoto);
       applicantData.append("id_card_type", formValue.idCardType);
-      applicantData.append("photo_file", photoData);
-      applicantData.append("id_card_profile", JSON.stringify(profile));
+      applicantData.append("id_card_no", formValue.nik);
+      applicantData.append("id_card_file", fileIdCard);
+      applicantData.append("profile", JSON.stringify(profile) as string);
 
-      const res = await fetch("/api/upload", {
+      const res = await fetch(`${BASE_URL}/applications`, {
         method: "POST",
         body: applicantData,
         headers: {
-          "Content-Type": "multipart/form-data",
+          // "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
       console.log(res);
-      return res;
+      // return res;
     } catch (e) {
       console.log(e);
     }

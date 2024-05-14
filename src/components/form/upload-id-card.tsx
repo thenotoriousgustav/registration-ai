@@ -55,9 +55,6 @@ export const UploadIDCard = ({ formValue, setFormValue, setStep }: any) => {
         const r = extractedData.religion.toLowerCase() as string;
         console.log("51", r);
 
-        const a = extractedData.dob.split("-") as string;
-        console.log(a);
-
         setFormValue((prev: any) => ({
           ...prev,
           name: extractedData.name,
