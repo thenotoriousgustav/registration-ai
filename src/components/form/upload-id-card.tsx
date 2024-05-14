@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export const UploadIDCard = ({
   formValue,
@@ -33,6 +34,12 @@ export const UploadIDCard = ({
   setIdCard,
   setStep,
 }: any) => {
+  useEffect(() => {
+    if (idCard) {
+      console.log("40", idCard);
+    }
+  }, [idCard]);
+
   const handleFoto = (e: any) => {
     const file = e.target.files?.[0];
 
@@ -72,7 +79,7 @@ export const UploadIDCard = ({
               <SelectValue placeholder="pilih" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem  value="KTP">KTP</SelectItem>
+              <SelectItem value="KTP">KTP</SelectItem>
               <SelectItem value="SIM">SIM</SelectItem>
             </SelectContent>
           </Select>
@@ -127,7 +134,7 @@ export const UploadIDCard = ({
       </CardContent>
       <CardFooter className="mt-12 p-0 justify-between  px-9">
         <Button onClick={() => setStep("1")}>kembali</Button>
-        {idCard && <Button onClick={() => setStep("3")}>Lanjutkan</Button>}
+        <Button onClick={() => setStep("3")}>Lanjutkan</Button>
       </CardFooter>
     </Card>
   );

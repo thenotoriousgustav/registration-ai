@@ -31,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import Image from "next/image";
+import { useEffect } from "react";
 
 const agamaData = [
   "islam",
@@ -56,18 +57,15 @@ export default function RegistrationForm({
         className="w-full h-full flex items-center justify-center"
         encType="multipart/form-data"
       >
-        <Card className="w-[700px] h-[620px] overflow-auto ">
+        <Card className="w-full h-full ">
           <CardHeader className="">
             <CardTitle className=" text-center text-3xl font-bold ">
               Formulir Ujian
             </CardTitle>
-            {/* <CardDescription className="text-center ">
-              Lengkapkan data diri untuk mendaftar ujian secara resmi.
-            </CardDescription> */}
           </CardHeader>
           <CardContent className="flex flex-col gap-y-4 ">
-            {/* foto ktp */}
-            {/* <div className=" flex flex-row gap-x-3">
+            {/* foto ktp
+            <div className=" flex flex-row gap-x-3">
               <div className="flex flex-col space-y-1.5 flex-1">
                 <Label htmlFor="ktp">KTP:</Label>
               </div>
@@ -108,6 +106,13 @@ export default function RegistrationForm({
               <div className="flex flex-col space-y-1.5 flex-1">
                 <Label htmlFor="name">Nama :</Label>
                 <Input
+                  onChange={(e) =>
+                    setFormValue((prev: any) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  value={formValue.name}
                   type="text"
                   id="name"
                   name="name"
@@ -117,6 +122,13 @@ export default function RegistrationForm({
               <div className="flex flex-col space-y-1.5 flex-1">
                 <Label htmlFor="name">NIK (16 digit) :</Label>
                 <Input
+                  onChange={(e) =>
+                    setFormValue((prev: any) => ({
+                      ...prev,
+                      NIK: e.target.value,
+                    }))
+                  }
+                  value={formValue.NIK}
                   type="text"
                   id="nik"
                   name="nik"
@@ -129,11 +141,35 @@ export default function RegistrationForm({
             <div className="flex flex-row gap-x-3">
               <div className="flex flex-col space-y-1.5 flex-1">
                 <Label htmlFor="pob">Tempat Lahir :</Label>
-                <Input type="text" id="pob" name="pob" placeholder="Bekasi" />
+                <Input
+                  onChange={(e) =>
+                    setFormValue((prev: any) => ({
+                      ...prev,
+                      pob: e.target.value,
+                    }))
+                  }
+                  value={formValue.dob}
+                  type="text"
+                  id="pob"
+                  name="pob"
+                  placeholder="Bekasi"
+                />
               </div>
               <div className="flex flex-col space-y-1.5 flex-1">
                 <Label htmlFor="dob">Tanggal Lahir :</Label>
-                <Input type="date" id="dob" name="dob" placeholder="" />
+                <Input
+                  onChange={(e) =>
+                    setFormValue((prev: any) => ({
+                      ...prev,
+                      dob: e.target.value,
+                    }))
+                  }
+                  value={formValue.pob}
+                  type="date"
+                  id="dob"
+                  name="dob"
+                  placeholder=""
+                />
               </div>
             </div>
 
@@ -143,8 +179,13 @@ export default function RegistrationForm({
                 <Label htmlFor="gender">Jenis Kelamin :</Label>
                 <Select
                   name="gender"
-                  // onValueChange={field.onChange}
-                  // defaultValue={field.value}
+                  value={formValue.gender}
+                  onValueChange={(value: string) =>
+                    setFormValue((prev: any) => ({
+                      ...prev,
+                      gender: value,
+                    }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="pilih" />
@@ -158,7 +199,16 @@ export default function RegistrationForm({
 
               <div className="flex flex-col space-y-1.5 flex-1">
                 <Label htmlFor="agama">Agama :</Label>
-                <Select name="agama">
+                <Select
+                  name="agama"
+                  value={formValue.religion}
+                  onValueChange={(value: string) =>
+                    setFormValue((prev: any) => ({
+                      ...prev,
+                      religion: value,
+                    }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="pilih" />
                   </SelectTrigger>
@@ -181,19 +231,19 @@ export default function RegistrationForm({
             <div className="flex flex-row gap-x-3">
               <div className="flex flex-col space-y-1.5 flex-1">
                 <Label htmlFor="name">Kota :</Label>
-                <Input type="text" id="kota" name="kota" placeholder="Bekasi" />
-              </div>
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <Label htmlFor="tipe">Tipe file :</Label>
-                <Select name="tipe">
-                  <SelectTrigger>
-                    <SelectValue placeholder="pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="KTP">KTP</SelectItem>
-                    <SelectItem value="SIM">SIM</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input
+                  onChange={(e) =>
+                    setFormValue((prev: any) => ({
+                      ...prev,
+                      city: e.target.value,
+                    }))
+                  }
+                  value={formValue.city}
+                  type="text"
+                  id="kota"
+                  name="kota"
+                  placeholder="Bekasi"
+                />
               </div>
             </div>
 
@@ -202,6 +252,13 @@ export default function RegistrationForm({
               <div className="flex flex-col space-y-1.5 flex-1 ">
                 <Label htmlFor="address">Alamat :</Label>
                 <Textarea
+                  value={formValue.address}
+                  onChange={(e) =>
+                    setFormValue((prev: any) => ({
+                      ...prev,
+                      address: e.target.value,
+                    }))
+                  }
                   rows={3}
                   id="address"
                   name="adress"

@@ -27,6 +27,12 @@ export default function TakePhoto({ photo, setPhoto, setStep }: any) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    if (photo) {
+      console.log("31", photo);
+    }
+  }, [photo]);
+
+  useEffect(() => {
     const getMedia = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({

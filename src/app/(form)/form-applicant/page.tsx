@@ -6,8 +6,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IoIosArrowBack } from "react-icons/io";
 import RegistrationForm from "@/components/form/registration-form";
+import { dataURLtoBlob } from "@/lib/utils";
 
-export default function TabsDemo() {
+export default function FormApplicantData() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
   const [step, setStep] = useState<string>("1");
   const [photo, setPhoto] = useState<any>(null);
   const [idCard, setIdCard] = useState<any>(null);
@@ -18,6 +21,7 @@ export default function TabsDemo() {
     cardType: "",
     NIK: "",
     pob: "",
+    dob: "",
     gender: "",
     religion: "",
     city: "",
@@ -33,42 +37,48 @@ export default function TabsDemo() {
   //   router.push(`/`);
   // }
 
+  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   try {
+  //     event.preventDefault();
+  //     const applicantData = new FormData();
+  //     applicantData.append("exam_id", formValue.examId);
+  //     // applicantData.append("user_id", formValue.userId);
+  //     applicantData.append("id_card_type", formValue.cardType);
+  //     applicantData.append("id_card_no", formValue.NIK);
+
+  //     const profile = {
+  //       full_name: formValue.name,
+  //       pob: formValue.pob as string,
+  //       dob: formValue.dob as string,
+  //     };
+  //     applicantData.append("profile", JSON.stringify(profile));
+
+  //     const photoData = await dataURLtoBlob(photo);
+  //     const idCardData = await dataURLtoBlob(idCard);
+  //     applicantData.append("photo_file", photoData);
+  //     applicantData.append("id_card_file", idCardData);
+
+  //     const res = await fetch(`${BASE_URL}/applications`, {
+  //       method: "POST",
+  //       body: applicantData,
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     console.log(res);
+  //     return res;
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    try {
-      event.preventDefault();
-      const applicantData = new FormData();
-      applicantData.append("name", event.currentTarget.name);
-      applicantData.append("nik", event.currentTarget.nik);
-
-      const id_card_profile = {
-        pob: event.currentTarget.pob as string,
-        dob: event.currentTarget.dob as string,
-      };
-
-      applicantData.append("id_card_profile", id_card_profile as any);
-
-      // const photoData = await dataURLtoBlob(photo);
-      // const ktpData = await dataURLtoBlob(ktp);
-
-      // applicantData.append("foto", photoData);
-      // applicantData.append("ktp", ktpData);
-      applicantData.append("tipeFile", "ktp|sim");
-      applicantData.append("user_id", "userId");
-      applicantData.append("exam_id", "examId");
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: applicantData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log(res);
-      return res;
-    } catch (e) {
-      console.log(e);
-    }
+    console.log("77", formValue);
+    const photoData = await dataURLtoBlob(photo);
+    const idCardData = await dataURLtoBlob(idCard);
+    console.log("80", photoData);
+    console.log("81", idCardData);
   };
 
   return (
