@@ -32,8 +32,7 @@ export default function CardUjian({
   const router = useRouter();
   useEffect(() => {
     if (examId) {
-      console.log(examId);
-      router.push("/take-photo");
+      router.push("/form-applicant");
     }
   }, [examId]);
 
