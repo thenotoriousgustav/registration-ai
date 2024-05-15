@@ -4,9 +4,7 @@ import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { AppWrapper } from "@/lib/ContextProvider";
-import { Toaster } from "@/components/ui/toaster";
-import TanstackProvider from "@/lib/TanstackProvider";
+import { ToasterProvider } from "@/components/toaster-provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -24,25 +22,21 @@ export default function UserLayout({
 }>) {
   return (
     <html lang="en">
-      <TanstackProvider>
-        <AppWrapper>
-          <body
-            className={cn(
-              "min-h-screen flex flex-col bg-background font-sans antialiased",
-              fontSans.variable
-            )}
-          >
-            <header>
-              <Navigation />
-            </header>
-            <main className="flex-grow">{children}</main>
-            <footer className="bg-secondary w-full">
-              <Footer />
-            </footer>
-            <Toaster />
-          </body>
-        </AppWrapper>
-      </TanstackProvider>
+      <body
+        className={cn(
+          "min-h-screen flex flex-col bg-background font-sans antialiased",
+          fontSans.variable
+        )}
+      >
+        <header>
+          <Navigation />
+        </header>
+        <main className="flex-grow">{children}</main>
+        <footer className="bg-secondary w-full">
+          <Footer />
+        </footer>
+        <ToasterProvider />
+      </body>
     </html>
   );
 }
