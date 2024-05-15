@@ -8,6 +8,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import RegistrationForm from "@/components/form/registration-form";
 import { dataURLtoBlob } from "@/lib/utils";
 import { getSession } from "@/lib/session";
+import { useRouter } from "next/navigation";
 
 export default function FormApplicantData({
   params,
@@ -15,6 +16,7 @@ export default function FormApplicantData({
   params: { slug: string };
 }) {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const router = useRouter();
 
   const [step, setStep] = useState<string>("1");
   const [formValue, setFormValue] = useState({
@@ -68,17 +70,26 @@ export default function FormApplicantData({
       applicantData.append("id_card_file", fileIdCard);
       applicantData.append("profile", JSON.stringify(profile) as string);
 
-      const res = await fetch(`${BASE_URL}/applications`, {
-        method: "POST",
-        body: applicantData,
-        headers: {
-          // "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const { status, message, data } = await fetch(
+        `${BASE_URL}/applications`,
+        {
+          method: "POST",
+          body: applicantData,
+          headers: {
+            // "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      ).then((res) => res.json());
 
-      console.log(res);
-      // return res;
+      console.log(status);
+      if (status == "success") {
+        localStorage.setItem(
+          "message",
+          "Successfully apply, please wait for further information"
+        );
+        router.push("/");
+      }
     } catch (e) {
       console.log(e);
     }
