@@ -88,7 +88,7 @@ export default function FormApplicantData({
           "message",
           "Successfully apply, please wait for further information"
         );
-        router.push("/");
+        router.push("/verification");
       }
     } catch (e) {
       console.log(e);
