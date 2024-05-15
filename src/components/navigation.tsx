@@ -19,8 +19,6 @@ async function getProfile() {
     const session = await getSession();
     const accessToken = session?.accessToken;
 
-    console.log(accessToken);
-
     if (accessToken) {
       const res = await fetch("http://localhost:3001/auth/profile", {
         headers: {
@@ -30,20 +28,20 @@ async function getProfile() {
 
       if (!res.ok) {
         console.error("Failed to fetch profile data:", res.statusText);
-        return null;
+        return [];
       }
       return res.json();
     } else {
-      return null;
+      return [];
     }
   } catch (error) {
     console.error("Error fetching profile data:", error);
-    return null;
+    return [];
   }
 }
 
 export default async function Navigation() {
-  const profile = await getProfile();
+  const { data: profile } = await getProfile();
   const session = await getSession();
 
   return (

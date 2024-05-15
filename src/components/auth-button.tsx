@@ -50,12 +50,12 @@ export function AuthButton({ session, profile }: AuthButtonProps) {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src={profile.picture} />
-            <AvatarFallback>{profile.name}</AvatarFallback>
+            <AvatarImage src={profile?.picture} />
+            <AvatarFallback>{profile?.name.charAt(0)}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel>{profile.name}</DropdownMenuLabel>
+          <DropdownMenuLabel>{profile?.name}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
