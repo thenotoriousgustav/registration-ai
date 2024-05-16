@@ -17,7 +17,7 @@ export default function page() {
           <li>3. Tolong membuka mulut untuk memverifikasi</li>
         </ul>
         <Button variant={"default"} asChild className="mt-10">
-          <Link href="/face-verification">Verifikasi</Link>
+          <Link href="/verification/face-verification">Verifikasi</Link>
         </Button>
       </div>
     </section>

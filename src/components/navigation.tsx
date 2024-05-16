@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -13,35 +12,10 @@ import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { getSession } from "@/lib/session";
 import { AuthButton } from "./auth-button";
-
-async function getProfile() {
-  try {
-    const session = await getSession();
-    const accessToken = session?.accessToken;
-
-    if (accessToken) {
-      const res = await fetch("http://localhost:3001/auth/profile", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (!res.ok) {
-        console.error("Failed to fetch profile data:", res.statusText);
-        return [];
-      }
-      return res.json();
-    } else {
-      return [];
-    }
-  } catch (error) {
-    console.error("Error fetching profile data:", error);
-    return [];
-  }
-}
+import { getProfile } from "@/lib/getProfile";
 
 export default async function Navigation() {
-  const { data: profile } = await getProfile();
+  const profile = await getProfile();
   const session = await getSession();
 
   return (

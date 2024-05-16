@@ -32,6 +32,18 @@ export async function getSession() {
   return await decrypt(session);
 }
 
+// export async function getSession() {
+//   const session = cookies().get("session")?.value;
+//   if (!session) return null;
+
+//   return new Promise((resolve) =>
+//     setTimeout(async () => {
+//       // cookies will be called outside of the async context, causing a build-time error
+//       return resolve(session);
+//     }, 1000)
+//   );
+// }
+
 export async function createSession(accessToken: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const session = await encrypt({ accessToken, expiresAt });

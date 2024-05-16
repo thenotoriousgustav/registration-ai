@@ -43,8 +43,8 @@ export default async function ExamPage() {
   const { data: exams } = await getExams();
 
   return (
-    <Container className="my-6">
-      <div className="flex flex-wrap justify-center items-center gap-10">
+    <Container className=" mt-20">
+      <div className="flex justify-around items-center flex-wrap gap-10">
         <Suspense fallback={<p className="text-center text-5xl">Loading...</p>}>
           {exams.length > 0 ? (
             exams.map((exam: TExam) => <CardUjian key={exam.id} exam={exam} />)
