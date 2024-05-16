@@ -18,6 +18,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../ui/dialog";
+import { formatDate } from "@/lib/formatDate";
+import { formatDay } from "@/lib/formatDay";
 
 type TExam = {
   id: string;
@@ -33,20 +35,24 @@ export default function CardUjian({ exam }: { exam: TExam }) {
   let status = "";
 
   return (
-    <Card className="w-[750px] hover:-translate-y-2  transform transition-all ">
-      <CardHeader className="">
+    <Card className="w-[600px] md:w-[500px] h-[350px] hover:-translate-y-2  transform transition-all ">
+      <CardHeader>
         <CardTitle className="text-2xl font-semibold">{exam.title}</CardTitle>
       </CardHeader>
-      <CardContent className="text-lg flex justify-between items-center">
-        <div>
-          <h1>Pendaftaran Sampai:</h1>
+      <CardContent className="text-lg">
+        <div className="flex justify-between items-center bg-secondary rounded-xl p-6">
           <div>
-            <span>
-              {new Date(exam.reg_start).toLocaleDateString()} -{" "}
-              {new Date(exam.reg_end).toLocaleDateString()}
-            </span>
+            <h1 className="text-sm">Mulai:</h1>
+            <p className="font-bold">{formatDate(exam.start)}</p>
+            <p className="text-sm">{formatDay(exam.start)}</p>
+          </div>
+          <div>
+            <h1 className="text-sm">Selesai:</h1>
+            <p className="font-bold">{formatDate(exam.end)}</p>
+            <p className="text-sm">{formatDay(exam.end)}</p>
           </div>
         </div>
+
         <div>
           {status === "terdaftar" ? (
             <h1>✅ Terdaftar</h1>

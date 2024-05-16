@@ -14,7 +14,7 @@ export default function Home() {
         </div>
         <div className="mt-8">
           <Image
-            src="/img/img-1.jpeg"
+            src="/img/view.jpeg"
             alt="asd"
             width="0"
             height="0"

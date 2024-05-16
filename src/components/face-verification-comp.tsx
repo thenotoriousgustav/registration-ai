@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { RocketIcon } from "@radix-ui/react-icons";
 
-export default function FaceVerificationComp() {
+export default function FaceVerificationComp({ applications }: any) {
   const router = useRouter();
   const imageRef = useRef<HTMLImageElement>(null);
   const webcamRef = useRef<HTMLVideoElement>(null);
@@ -24,12 +24,12 @@ export default function FaceVerificationComp() {
     // load models
     const loadModels = async () => {
       await Promise.all([
-        faceapi.nets.ssdMobilenetv1.loadFromUri("models"),
-        faceapi.nets.tinyFaceDetector.loadFromUri("models"),
-        faceapi.nets.faceLandmark68Net.loadFromUri("models"),
-        faceapi.nets.faceRecognitionNet.loadFromUri("models"),
-        faceapi.nets.faceExpressionNet.loadFromUri("models"),
-        faceapi.nets.ageGenderNet.loadFromUri("models"),
+        faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+        faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+        faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+        faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+        faceapi.nets.faceExpressionNet.loadFromUri("/models"),
+        faceapi.nets.ageGenderNet.loadFromUri("/models"),
       ]);
     };
 
@@ -177,7 +177,10 @@ export default function FaceVerificationComp() {
       <div>
         <img
           ref={imageRef}
-          src="/img/ktp-gustam.jpg"
+          // src="/img/ktp-gustam.jpg"
+          crossOrigin="anonymous" // Add this line
+          src={applications[0].photo}
+          // src="/img/beken.png"
           alt="Selfie"
           className="h-auto w-80 hidden"
         />

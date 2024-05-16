@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function page() {
+export default async function VerifPage() {
   return (
     <section className="w-full h-screen flex flex-col justify-center items-center">
       <div className="w-8/12">
@@ -17,7 +17,7 @@ export default function page() {
           <li>3. Tolong membuka mulut untuk memverifikasi</li>
         </ul>
         <Button variant={"default"} asChild className="mt-10">
-          <Link href="/face-verification">Verifikasi</Link>
+          <Link href="/verification/face-verification">Verifikasi</Link>
         </Button>
       </div>
     </section>

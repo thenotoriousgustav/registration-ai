@@ -1,7 +1,6 @@
 "use client";
 
 import { LogOut, User } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { deleteSession } from "@/lib/session";
@@ -17,19 +16,18 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
 type AuthButtonProps = {
   session: any;
-  profile: ProfileType;
+  profile: Profile | null;
 };
 
-type ProfileType = {
-  sub: string;
-  name: string;
+type Profile = {
   username: string;
-  email: string;
+  name: string;
+  sub: string;
   picture: string;
+  iat: number;
+  exp: number;
 };
 
 export function AuthButton({ session, profile }: AuthButtonProps) {
@@ -45,17 +43,17 @@ export function AuthButton({ session, profile }: AuthButtonProps) {
     await deleteSession();
   };
 
-  const Dropdown = ({ profile }: { profile: ProfileType }) => {
+  const Dropdown = ({ profile }: { profile: Profile }) => {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src={profile?.picture} />
-            <AvatarFallback>{profile?.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={profile.picture} />
+            <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel>{profile?.name}</DropdownMenuLabel>
+          <DropdownMenuLabel>{profile.name}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
