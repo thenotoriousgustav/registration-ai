@@ -28,7 +28,6 @@ export default function VerifikasiLayout({
         )}
       >
         <main>{children}</main>
-        {/* <ToasterProvider /> */}
         <Toaster />
       </body>
     </html>

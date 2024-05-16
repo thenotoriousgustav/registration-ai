@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { RocketIcon } from "@radix-ui/react-icons";
 
-export default function FaceVerificationComp() {
+export default function FaceVerificationComp({ applications }: any) {
   const router = useRouter();
   const imageRef = useRef<HTMLImageElement>(null);
   const webcamRef = useRef<HTMLVideoElement>(null);
@@ -177,7 +177,10 @@ export default function FaceVerificationComp() {
       <div>
         <img
           ref={imageRef}
-          src="/img/ktp-gustam.jpg"
+          // src="/img/ktp-gustam.jpg"
+          crossOrigin="anonymous" // Add this line
+          src={applications[0].photo}
+          // src="/img/beken.png"
           alt="Selfie"
           className="h-auto w-80 hidden"
         />

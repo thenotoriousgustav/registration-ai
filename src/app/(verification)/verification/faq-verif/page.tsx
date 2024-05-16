@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function page() {
+export default async function VerifPage() {
   return (
     <section className="w-full h-screen flex flex-col justify-center items-center">
       <div className="w-8/12">
