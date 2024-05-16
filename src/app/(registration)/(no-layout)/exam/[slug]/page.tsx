@@ -57,7 +57,7 @@ export default function FormApplicantData({
       const filePhoto = new File([photoData], "picture.png", {
         type: "image/png",
       });
-      const fileIdCard = new File([idCardData], "id-card.png", {
+      const fileIdCard = new File([idCardData], "picture.png", {
         type: "image/png",
       });
 
