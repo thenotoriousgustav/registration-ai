@@ -1,10 +1,10 @@
 import FaceVerificationComp from "@/components/face-verification-comp";
-import { getApplications } from "@/lib/getApplications";
+import { GET } from "@/lib/httpClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function VerifikasiPage() {
-  const applications = await getApplications();
+  const applications = await GET("/applications");
 
   return (
     <section>

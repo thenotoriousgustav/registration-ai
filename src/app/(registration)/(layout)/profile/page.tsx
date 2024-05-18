@@ -1,11 +1,9 @@
 import Container from "@/components/container";
-import { getProfile } from "@/lib/getProfile";
-import { getSession } from "@/lib/session";
-import React from "react";
+import { GET } from "@/lib/httpClient";
 
 export default async function ProfilePage() {
-  const profile = await getProfile();
-
+  const profile = await GET("/auth/profile");
+  console.log(profile);
   return (
     <section>
       <Container>

@@ -2,7 +2,7 @@
 import TakePhoto from "@/components/registration/form/take-photo";
 import { UploadIDCard } from "@/components/registration/form/upload-id-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IoIosArrowBack } from "react-icons/io";
 import RegistrationForm from "@/components/registration/form/registration-form";
@@ -88,7 +88,7 @@ export default function FormApplicantData({
           "message",
           "Successfully apply, please wait for further information"
         );
-        router.push("/verification/faq-verif");
+        router.push("/exam/wait-exam");
       }
     } catch (e) {
       console.log(e);

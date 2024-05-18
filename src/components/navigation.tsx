@@ -12,10 +12,19 @@ import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { getSession } from "@/lib/session";
 import { AuthButton } from "./auth-button";
-import { getProfile } from "@/lib/getProfile";
+import { GET } from "@/lib/httpClient";
+
+type Profile = {
+  username: string;
+  name: string;
+  sub: string;
+  picture: string;
+  iat: number;
+  exp: number;
+};
 
 export default async function Navigation() {
-  const profile = await getProfile();
+  const profile = await GET<Profile>("/auth/profile");
   const session = await getSession();
 
   return (

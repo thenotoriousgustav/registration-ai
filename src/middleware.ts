@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decrypt, updateSession } from "@/lib/session";
 import { cookies } from "next/headers";
+import { GET } from "./lib/httpClient";
 
 //! 1. Specify protected and public routes
-const protectedRoutes = [
-  "/pilih-ujian",
-  "/verification",
-  "/face-verification",
-  "/exam",
-];
+const protectedRoutes = ["/verification/:*", , "/exam"];
 const publicRoutes = ["/"];
 
 export default async function middleware(req: NextRequest) {
@@ -23,6 +19,18 @@ export default async function middleware(req: NextRequest) {
 
   if (session) {
     await updateSession(req);
+  }
+
+  //! 4. Check if the exam exists
+  if (path.startsWith("/exam/")) {
+    const examId = path.split("/")[2];
+    // const exam = await getExam(examId);
+    const exam = await GET(`/exams/${examId}`);
+
+    if (!exam) {
+      // Redirect to Not Found page if the exam does not exist
+      return NextResponse.redirect(new URL("/", req.nextUrl));
+    }
   }
 
   //! 5. Redirect to /login if the user is not authenticated

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Container from "@/components/container";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
@@ -9,7 +8,9 @@ export default function Home() {
     <Container className="my-6 ">
       <section>
         <div>
-          <h2 className="text-4xl font-semibold italic">Kemenkeu</h2>
+          <h2 className="text-4xl font-semibold italic">
+            Kementerian Keuangan
+          </h2>
           <h1 className="text-7xl font-semibold">COMPUTER ASSISTED TEST.</h1>
         </div>
         <div className="mt-8">
