@@ -61,7 +61,7 @@ export default function ExamCard({ exam, status }: ExamCardProps) {
       default:
         return (
           <Button variant="outline" className="w-full" asChild>
-            <Link href={`/exam/${exam.id}`}>Daftar</Link>
+            <Link href={`/exams/${exam.id}`}>Daftar</Link>
           </Button>
         );
     }
@@ -117,7 +117,7 @@ export default function ExamCard({ exam, status }: ExamCardProps) {
             </div>
             <DialogFooter>
               <Button variant="outline" className="mr-4" asChild>
-                <Link href="/verification/faq-verif">Mulai Ujian</Link>
+                <Link href={`/verification/${exam.id}`}>Mulai Ujian</Link>
               </Button>
             </DialogFooter>
           </DialogContent>

@@ -21,10 +21,8 @@ function GoogleCallbackContent() {
       const accessToken = params.get("token");
 
       if (accessToken) {
-        // Simpan access token ke cookies menggunakan createSession()
-        await createSession(accessToken as string);
+        await createSession(accessToken);
 
-        // Redirect ke halaman home setelah berhasil menyimpan access token
         router.push("/");
       }
     }

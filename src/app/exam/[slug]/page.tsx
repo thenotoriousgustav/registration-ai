@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
 
-export default function OpeningExamPage() {
+export default function OpeningExamPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   return (
     <section className="w-full h-screen flex flex-col justify-center items-center">
       <div className="w-8/12">
@@ -20,7 +24,7 @@ export default function OpeningExamPage() {
         </p>
 
         <Button variant={"default"} asChild className="mt-10">
-          <Link href="/live-exam">Lanjut Ujian</Link>
+          <Link href={`/exam/live-exam/${params.slug}`}>Lanjut Ujian</Link>
         </Button>
       </div>
     </section>

@@ -3,8 +3,6 @@ import { Inter as FontSans } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 
-import LoadingBar from "@/components/loading-bar";
-
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -23,11 +21,11 @@ export default function UserLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen flex flex-col bg-background font-sans antialiased",
+          "min-h-screen flex items-center justify-center flex-col bg-background font-sans antialiased",
           fontSans.variable
         )}
       >
-        <LoadingBar>{children}</LoadingBar>
+        <main>{children}</main>
       </body>
     </html>
   );

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/toaster-provider";
+import LoadingBar from "@/components/loading-bar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -30,14 +31,16 @@ export default function UserLayout({
           fontSans.variable
         )}
       >
-        <header>
-          <Navigation />
-        </header>
-        <main className="flex-grow">{children}</main>
-        <footer className="bg-secondary w-full">
-          <Footer />
-        </footer>
-        <ToasterProvider />
+        <LoadingBar>
+          <header>
+            <Navigation />
+          </header>
+          <main className="flex-grow">{children}</main>
+          <footer className="bg-secondary w-full">
+            <Footer />
+          </footer>
+          <ToasterProvider />
+        </LoadingBar>
       </body>
     </html>
   );

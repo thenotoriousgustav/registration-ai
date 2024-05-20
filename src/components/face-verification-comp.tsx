@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { RocketIcon } from "@radix-ui/react-icons";
 
-export default function FaceVerificationComp({ applications }: any) {
+export default function FaceVerificationComp({ applications, params }: any) {
   const router = useRouter();
   const imageRef = useRef<HTMLImageElement>(null);
   const webcamRef = useRef<HTMLVideoElement>(null);
@@ -108,13 +108,6 @@ export default function FaceVerificationComp({ applications }: any) {
         );
 
         console.log(detection?.alignedRect.box.width);
-        // console.log('Face comparison distance:', distance);
-
-        // console.log(
-        //   detection.angle.pitch,
-        //   detection.angle.yaw,
-        //   detection.angle.roll
-        // );
 
         const userOpenMouth = detection.expressions.surprised > 0.6;
 
@@ -131,7 +124,7 @@ export default function FaceVerificationComp({ applications }: any) {
 
           setMatches("Face match!");
           setTimeout(() => {
-            router.push("/opening-exam");
+            router.push(`/exam/${params.slug}`);
           }, 1000);
         } else if (distance < 0.55) {
           setMatches("Please open your mouth!");

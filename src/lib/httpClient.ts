@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { getSession } from "./session";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";

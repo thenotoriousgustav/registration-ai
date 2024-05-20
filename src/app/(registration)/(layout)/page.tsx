@@ -25,7 +25,7 @@ export default function Home() {
         </div>
 
         <Button className="mt-8" asChild>
-          <Link href="/exam">Exam</Link>
+          <Link href="/exams">Go to Exams</Link>
         </Button>
       </section>
     </Container>

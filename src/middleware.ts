@@ -22,7 +22,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   //! 4. Check if the exam exists
-  if (path.startsWith("/exam/")) {
+  if (path.startsWith("/exams/")) {
     const examId = path.split("/")[2];
     // const exam = await getExam(examId);
     const exam = await GET(`/exams/${examId}`);
@@ -34,7 +34,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   //! 5. Redirect to /login if the user is not authenticated
-  if (isProtectedRoute && !session) {
+  if (isProtectedRoute && !session && !session.accessToken) {
     return NextResponse.redirect(
       new URL("http://localhost:3001/auth/google/login", req.nextUrl)
     );

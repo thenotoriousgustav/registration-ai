@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -11,8 +12,10 @@ import { drawRect } from "@/utils/drawRect";
 
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { RocketIcon } from "@radix-ui/react-icons";
+import { getSession } from "@/lib/session";
+import { dataURLtoBlob } from "@/lib/utils";
 
-export default function ExamComp() {
+export default function ExamComp({ params }: { params: { slug: string } }) {
   const webcamRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasDuaRef = useRef<HTMLCanvasElement>(null);
@@ -20,10 +23,13 @@ export default function ExamComp() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const detectInterval = useRef<NodeJS.Timeout | null>(null);
   const lastFaceDetectedTimeRef = useRef<number | null>(null);
+  const lastCaptureTimeRef = useRef<number | null>(null);
   const [cameraMessage, setCameraMessage] = useState<string>("");
   const [objectMessage, setObjectMessage] = useState<string>("");
   const [faceMessage, setFaceMessage] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+
+  const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
 
   const startVideo = () => {
     navigator.mediaDevices
@@ -36,6 +42,63 @@ export default function ExamComp() {
       .catch((err) => console.error(err));
   };
 
+  const captureScreenshot = () => {
+    const video = webcamRef.current;
+    if (!video) return null;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext("2d");
+    context?.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    return canvas.toDataURL("image/png");
+  };
+
+  const sendScreenshotToServer = async (screenshot: string, note: string) => {
+    const photoData = await dataURLtoBlob(screenshot);
+
+    const filePhoto = new File([photoData], "picture.png", {
+      type: "image/png",
+    });
+
+    const session = await getSession();
+    const accessToken = session?.accessToken;
+
+    const formData = new FormData();
+    formData.append("application_id", params.slug);
+    formData.append("note", note);
+    formData.append("status", "exam");
+    formData.append("file", filePhoto);
+
+    try {
+      await fetch("http://localhost:3001/evidences", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
+
+      // Set the screenshot URL to state to display it
+      setScreenshotUrl(screenshot);
+    } catch (error) {
+      console.error("Error sending screenshot:", error);
+    }
+  };
+
+  const shouldCaptureScreenshot = () => {
+    const currentTime = Date.now();
+    if (
+      !lastCaptureTimeRef.current ||
+      currentTime - lastCaptureTimeRef.current >= 3000
+    ) {
+      lastCaptureTimeRef.current = currentTime;
+      return true;
+    }
+    return false;
+  };
+
   const detectFaces = () => {
     const video = webcamRef.current;
     const canvas = canvasRef.current;
@@ -45,12 +108,9 @@ export default function ExamComp() {
     intervalRef.current = setInterval(async () => {
       const detections = await faceapi
         .detectAllFaces(video, new faceapi.SsdMobilenetv1Options())
-        // .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()
         .withFaceExpressions()
         .withAgeAndGender();
-
-      // console.log(detections);
 
       if (detections.length === 0) {
         const currentTime = new Date().getTime();
@@ -59,9 +119,14 @@ export default function ExamComp() {
           currentTime - lastFaceDetectedTimeRef.current > 5000
         ) {
           const time = new Date().toLocaleTimeString();
-          setCameraMessage(
-            `Anda telah tidak terdeteksi di depan kamera selama 5 detik! ${time}`
-          );
+          const message = `Anda telah tidak terdeteksi di depan kamera selama 5 detik! ${time}`;
+          setCameraMessage(message);
+          if (shouldCaptureScreenshot()) {
+            const screenshot = captureScreenshot();
+            if (screenshot) {
+              sendScreenshotToServer(screenshot, message);
+            }
+          }
         }
       } else {
         lastFaceDetectedTimeRef.current = new Date().getTime();
@@ -69,7 +134,14 @@ export default function ExamComp() {
       }
 
       if (detections.length > 1) {
-        setFaceMessage(`terdeteksi ${detections.length} wajah disekitar anda!`);
+        const message = `terdeteksi ${detections.length} wajah disekitar anda!`;
+        setFaceMessage(message);
+        if (shouldCaptureScreenshot()) {
+          const screenshot = captureScreenshot();
+          if (screenshot) {
+            sendScreenshotToServer(screenshot, message);
+          }
+        }
       } else {
         setFaceMessage("");
       }
@@ -121,8 +193,6 @@ export default function ExamComp() {
         0.5
       );
 
-      // console.log('Detect data: ', detectedObjects);
-
       // Check if any object resembles a camera
       const isCameraDetected = detectedObjects.some(
         (obj) => obj.class === "cell phone" || obj.class === "laptop"
@@ -136,9 +206,23 @@ export default function ExamComp() {
       const isMultiplePeopleDetected = numberOfPeople > 1;
 
       if (isCameraDetected) {
-        setObjectMessage("Terdeteksi Device lain di dekat Anda!");
+        const message = "Terdeteksi Device lain di dekat Anda!";
+        setObjectMessage(message);
+        if (shouldCaptureScreenshot()) {
+          const screenshot = captureScreenshot();
+          if (screenshot) {
+            sendScreenshotToServer(screenshot, message);
+          }
+        }
       } else if (isMultiplePeopleDetected) {
-        setObjectMessage("Ada orang lain disekitar Anda!");
+        const message = "Ada orang lain disekitar Anda!";
+        setObjectMessage(message);
+        if (shouldCaptureScreenshot()) {
+          const screenshot = captureScreenshot();
+          if (screenshot) {
+            sendScreenshotToServer(screenshot, message);
+          }
+        }
       } else {
         setObjectMessage("");
       }
@@ -157,7 +241,7 @@ export default function ExamComp() {
     // Load network
     const net = await cocoSSDLoad();
 
-    //  Loop to detect objects
+    // Loop to detect objects
     detectInterval.current = setInterval(() => {
       runObjectDetection(net);
     }, 100);
@@ -166,12 +250,12 @@ export default function ExamComp() {
   useEffect(() => {
     const loadModels = async () => {
       await Promise.all([
-        faceapi.nets.ageGenderNet.loadFromUri("models"),
-        faceapi.nets.ssdMobilenetv1.loadFromUri("models"),
-        faceapi.nets.tinyFaceDetector.loadFromUri("models"),
-        faceapi.nets.faceLandmark68Net.loadFromUri("models"),
-        faceapi.nets.faceRecognitionNet.loadFromUri("models"),
-        faceapi.nets.faceExpressionNet.loadFromUri("models"),
+        faceapi.nets.ageGenderNet.loadFromUri("/models"),
+        faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+        faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+        faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+        faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+        faceapi.nets.faceExpressionNet.loadFromUri("/models"),
       ]);
       startVideo();
     };
@@ -182,7 +266,7 @@ export default function ExamComp() {
       setCameraMessage("Memulai Model...");
       detectFaces();
       runCoco();
-    }, 1000);
+    }, 5000); // Delay for 5 seconds
 
     return () => {
       if (intervalRef.current) {
@@ -197,7 +281,6 @@ export default function ExamComp() {
   return (
     <section>
       <div>
-        {/* <h1 className='text-7xl text-center mt-10'>Face Detection</h1> */}
         <div className="flex flex-col h-full items-center justify-center mt-16">
           <video
             ref={webcamRef}
@@ -219,6 +302,16 @@ export default function ExamComp() {
             {message && <AlertTitle>{message}</AlertTitle>}
           </Alert>
         </div>
+        {screenshotUrl && (
+          <div className="mt-10">
+            <h2>Hasil Capture:</h2>
+            <img
+              src={screenshotUrl}
+              alt="Screenshot"
+              className="rounded-md shadow-lg"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

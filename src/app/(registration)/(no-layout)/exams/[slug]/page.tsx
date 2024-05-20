@@ -61,6 +61,8 @@ export default function FormApplicantData({
         type: "image/png",
       });
 
+      console.log(filePhoto);
+
       const applicantData = new FormData();
       applicantData.append("exam_id", params.slug);
       applicantData.append("name", formValue.name);

@@ -3,12 +3,16 @@ import { GET } from "@/lib/httpClient";
 
 export const dynamic = "force-dynamic";
 
-export default async function VerifikasiPage() {
+export default async function VerifikasiPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const applications = await GET("/applications");
 
   return (
     <section>
-      <FaceVerificationComp applications={applications} />
+      <FaceVerificationComp applications={applications} params={params} />
     </section>
   );
 }
