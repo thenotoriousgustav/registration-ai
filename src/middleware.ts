@@ -5,7 +5,12 @@ import { GET } from "./lib/httpClient";
 import jwt from "jsonwebtoken";
 
 //! 1. Specify protected and public routes
-const protectedRoutes = ["/verification/:*", , "/exam"];
+const protectedRoutes = [
+  "/verification/:*",
+  "/simulation/:*",
+  "/exams",
+  "/profile",
+];
 const publicRoutes = ["/"];
 
 export default async function middleware(req: NextRequest) {
@@ -15,27 +20,24 @@ export default async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(path);
 
   //!check cookie
-  const cookie = cookies().get("session")?.value;
-  const session = await decrypt(cookie);
-
-  console.log(session?.accessToken);
+  const session = await getSession();
 
   if (session) {
     await updateSession(req);
   }
 
-  // //! 4. Check if the exam exists
-  // if (path.startsWith("/exams/")) {
-  //   const examId = path.split("/")[2];
-  //   const exam = await GET(`/exams/${examId}`);
+  //! 4. Check if the exam exists
+  if (path.startsWith("/exams/")) {
+    const examId = path.split("/")[2];
+    const exam = await GET(`/exams/${examId}`);
 
-  //   if (!exam) {
-  //     return NextResponse.redirect(new URL("/", req.nextUrl));
-  //   }
-  // }
+    if (!exam) {
+      return NextResponse.redirect(new URL("/", req.nextUrl));
+    }
+  }
 
   //! 5. Redirect to /login if the user is not authenticated
-  if (isProtectedRoute && !session && !session.accessToken) {
+  if (isProtectedRoute && !session) {
     return NextResponse.redirect(
       new URL("http://localhost:3001/auth/google/login", req.nextUrl)
     );

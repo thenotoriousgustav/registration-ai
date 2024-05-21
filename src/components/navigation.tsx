@@ -68,7 +68,6 @@ const NavigationSheet = () => {
             <Link href="/exams">Exams</Link>
           </Button>
         </div>
-
         <Separator className="my-6" />
       </SheetContent>
     </Sheet>

@@ -2,14 +2,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
 
-export default function OpeningExamPage({
+export default function SimulationPage({
   params,
 }: {
   params: { slug: string };
 }) {
   return (
     <section className="w-full h-screen flex flex-col justify-center items-center">
-      <div className="w-8/12">
+      <div className="w-10/12">
         <h2 className="text-4xl text-red-500 font-bold">
           Ujian ini diawasi oleh Sistem Ujian Anti Curang berbasis AI
         </h2>

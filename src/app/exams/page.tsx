@@ -4,7 +4,7 @@ import ExamCard from "@/components/exams-comp/exam-card";
 import { GET } from "@/lib/httpClient";
 import { Suspense } from "react";
 
-export default async function ExamPage() {
+export default async function ExamsPage() {
   const exams = await GET<any>("/exams");
   const applications = await GET<any>("/applications");
 

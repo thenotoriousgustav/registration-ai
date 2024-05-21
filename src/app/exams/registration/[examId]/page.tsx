@@ -10,7 +10,7 @@ import { dataURLtoBlob } from "@/lib/utils";
 import { getSession } from "@/lib/session";
 import { useRouter } from "next/navigation";
 
-export default function RegistrationExam({
+export default function RegistrationExamPage({
   params,
 }: {
   params: { examId: string };
@@ -90,7 +90,7 @@ export default function RegistrationExam({
           "message",
           "Successfully apply, please wait for further information"
         );
-        router.push("/");
+        router.push("/exams");
       }
     } catch (e) {
       console.log(e);

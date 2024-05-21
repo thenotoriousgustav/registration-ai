@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import FaceVerificationAI from "@/components/verification-comp/face-verification-ai";
 import { GET } from "@/lib/httpClient";
 
-export default async function VerifikasiPage({
+export default async function FaceVerificationPage({
   params,
 }: {
   params: { slug: string };

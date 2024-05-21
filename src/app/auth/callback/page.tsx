@@ -4,15 +4,15 @@ import { createSession } from "@/lib/session";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
 
-function GoogleCallback() {
+export default function Auth() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <GoogleCallbackContent />
+      <GoogleCallback />
     </Suspense>
   );
 }
 
-function GoogleCallbackContent() {
+function GoogleCallback() {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -32,5 +32,3 @@ function GoogleCallbackContent() {
 
   return <div>Loading...</div>;
 }
-
-export default GoogleCallback;

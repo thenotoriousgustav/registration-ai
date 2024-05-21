@@ -5,8 +5,8 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <section className="my-4">
-      <Container className="flex flex-col lg:flex-row gap-y-8 lg:gap-y-0 gap-x-4">
+    <section className="mt-2 mb-4">
+      <Container className="flex flex-col lg:flex-row gap-y-8 lg:gap-y-0 gap-x-3">
         <div className="relative lg:w-4/12 w-full ">
           <div className="bg-yellow-300 with-cutout p-6 h-[30rem] lg:h-[40rem] flex flex-col justify-between rounded-sm">
             <div>

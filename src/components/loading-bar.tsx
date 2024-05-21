@@ -11,7 +11,7 @@ const LoadingBar = ({ children }: { children: React.ReactNode }) => {
         color="#0A2FFF"
         options={{ showSpinner: true }}
         // shallowRouting
-        // startPosition={0.3}
+        startPosition={0.3}
         // stopDelay={1000}
       />
     </>

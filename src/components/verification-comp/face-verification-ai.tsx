@@ -175,7 +175,7 @@ export default function FaceVerificationAI({ application, params }: any) {
           src={application.photo}
           // src="/img/beken.png"
           alt="Selfie"
-          className="h-auto w-80 "
+          className="h-auto w-80 hidden"
         />
       </div>
 

@@ -25,50 +25,13 @@ import formatDuration from "@/lib/formatDuration";
 import { LucideArrowRight } from "lucide-react";
 
 export default function ExamCard({ exam, status, application }: any) {
-  console.log(exam);
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const getButtonContent = () => {
-    switch (status) {
-      case "approved":
-        return (
-          <DialogTrigger asChild>
-            <Button variant="outline" className="w-full">
-              View Exam Card
-            </Button>
-          </DialogTrigger>
-        );
-      case "initial":
-        return (
-          <Button variant="ghost" className="w-full">
-            Wait for Admin Approval
-          </Button>
-        );
-      case "rejected":
-        return (
-          <Button variant="outline" className="w-full" asChild>
-            <Link href="/">Reapply</Link>
-          </Button>
-        );
-      default:
-        return (
-          <Button variant="outline" className="w-full" asChild>
-            <Link href={`/exams/registration/${exam.id}`}>Daftar</Link>
-          </Button>
-        );
-    }
-  };
-
   return (
     <Card className="w-full hover:shadow-md transition-shadow duration-300 ">
       <CardHeader className="p-4 rounded-t-lg ">
         <CardTitle className="text-xl font-semibold">{exam.title}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 text-l ">
-        <div className="flex justify-between items-center bg-yellow-200 rounded-xl p-4 mb-4">
+        <div className="flex justify-between items-center bg-gray-200 rounded-xl p-4 mb-4">
           <div>
             <h1 className="text-sm">Start:</h1>
             <p className="font-bold">{formatTime(exam.start)}</p>
@@ -110,58 +73,94 @@ export default function ExamCard({ exam, status, application }: any) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="p-4  ">
-        {/* //! Dialog */}
+      <CardFooter className="p-4 flex justify-end items-end">
         <Dialog>
-          {getButtonContent()}
-          <DialogContent className="max-w-[40rem]">
-            <DialogHeader>
-              <DialogTitle>{exam.title}</DialogTitle>
-              <h1 className="text-lg font-semibold">
-                Ministry of Finance - CAT
-              </h1>
-            </DialogHeader>
-            {application && (
-              <div className="flex gap-x-8">
-                <div>
-                  <Image
-                    src={application.photo}
-                    alt={application.name}
-                    height={200}
-                    width={200}
-                    className="rounded-lg"
-                  />
-                </div>
-                <div className="text-sm font-semibold">
-                  <h1>Name: {application.name}</h1>
-                  <h1>NIK: {application.id_card_no}</h1>
-                  <h1>Place of Birth: {application.profile.pob}</h1>
-                  <h1>Date of Birth: {application.profile.dob}</h1>
-                  <h1>Religion: {application.profile.religion}</h1>
-                </div>
-              </div>
-            )}
-            <DialogDescription className="mt-4">
-              <p>Please do not share this exam card.</p>
-            </DialogDescription>
-            <div className="py-4 flex justify-between">
-              <p className="font-bold">
-                {formatTime(exam.start)} - {formatTime(exam.end)}
-              </p>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={handlePrint}>
-                Print Exam Card
-              </Button>
-              <Button variant="default" asChild className="mr-4">
-                <Link href={`/verification/${application?.id}`}>
-                  Start Exam
-                </Link>
-              </Button>
-            </DialogFooter>
-          </DialogContent>
+          <ButtonContent status={status} exam={exam} />
+          <DialogBody application={application} exam={exam} />
         </Dialog>
       </CardFooter>
     </Card>
   );
 }
+
+const ButtonContent = ({ status, exam }: any) => {
+  switch (status) {
+    case "approved":
+      return (
+        <DialogTrigger asChild>
+          <Button variant="default" className="self-end">
+            View Exam Card
+          </Button>
+        </DialogTrigger>
+      );
+    case "initial":
+      return (
+        <Button variant="ghost" className="">
+          Wait for Admin Approval
+        </Button>
+      );
+    case "rejected":
+      return (
+        <Button variant="default" className="" asChild>
+          <Link href="/">Reapply</Link>
+        </Button>
+      );
+    default:
+      return (
+        <Button variant="default" className="" asChild>
+          <Link href={`/exams/registration/${exam.id}`}>Register</Link>
+        </Button>
+      );
+  }
+};
+
+const DialogBody = ({ application, exam }: any) => {
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <DialogContent className="max-w-[40rem]">
+      <DialogHeader>
+        <DialogTitle>{exam.title}</DialogTitle>
+        <h1 className="text-lg font-semibold">Ministry of Finance - CAT</h1>
+      </DialogHeader>
+      {application && (
+        <div className="flex gap-x-8">
+          <div>
+            <Image
+              src={application.photo}
+              alt={application.name}
+              height={200}
+              width={200}
+              className="rounded-lg"
+            />
+          </div>
+          <div className="text-sm font-semibold">
+            <h1>Name: {application.name}</h1>
+            <h1>NIK: {application.id_card_no}</h1>
+            <h1>Place of Birth: {application.profile.pob}</h1>
+            <h1>Date of Birth: {application.profile.dob}</h1>
+            <h1>Religion: {application.profile.religion}</h1>
+          </div>
+        </div>
+      )}
+      <DialogDescription className="mt-4">
+        <p>Please do not share this exam card.</p>
+      </DialogDescription>
+      <div className="py-4 flex justify-between">
+        <p className="font-bold">
+          {formatTime(exam.start)} - {formatTime(exam.end)}
+        </p>
+      </div>
+      <DialogFooter>
+        <Button variant="outline" onClick={handlePrint}>
+          Print Exam Card
+        </Button>
+        <Button variant="default" asChild className="mr-4">
+          <Link href={`/verification/${application?.id}`}>Start Exam</Link>
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+};
