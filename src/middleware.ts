@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt, updateSession } from "@/lib/session";
+import { decrypt, getSession, updateSession } from "@/lib/session";
 import { cookies } from "next/headers";
 import { GET } from "./lib/httpClient";
+import jwt from "jsonwebtoken";
 
 //! 1. Specify protected and public routes
 const protectedRoutes = ["/verification/:*", , "/exam"];
@@ -13,25 +14,25 @@ export default async function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
 
-  //! 3. Decrypt the session from the cookie
+  //!check cookie
   const cookie = cookies().get("session")?.value;
   const session = await decrypt(cookie);
+
+  console.log(session?.accessToken);
 
   if (session) {
     await updateSession(req);
   }
 
-  //! 4. Check if the exam exists
-  if (path.startsWith("/exams/")) {
-    const examId = path.split("/")[2];
-    // const exam = await getExam(examId);
-    const exam = await GET(`/exams/${examId}`);
+  // //! 4. Check if the exam exists
+  // if (path.startsWith("/exams/")) {
+  //   const examId = path.split("/")[2];
+  //   const exam = await GET(`/exams/${examId}`);
 
-    if (!exam) {
-      // Redirect to Not Found page if the exam does not exist
-      return NextResponse.redirect(new URL("/", req.nextUrl));
-    }
-  }
+  //   if (!exam) {
+  //     return NextResponse.redirect(new URL("/", req.nextUrl));
+  //   }
+  // }
 
   //! 5. Redirect to /login if the user is not authenticated
   if (isProtectedRoute && !session && !session.accessToken) {

@@ -24,7 +24,9 @@ export default function OpeningExamPage({
         </p>
 
         <Button variant={"default"} asChild className="mt-10">
-          <Link href={`/exam/live-exam/${params.slug}`}>Lanjut Ujian</Link>
+          <Link href={`/simulation/live-exam/${params.slug}`}>
+            Lanjut Ujian
+          </Link>
         </Button>
       </div>
     </section>

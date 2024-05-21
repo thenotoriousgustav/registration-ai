@@ -1,5 +1,5 @@
-import ExamComp from "@/components/exam-comp";
-import Vad from "@/components/vad";
+import SimulationAI from "@/components/simulation-comp/simulation-ai";
+import VoiceActivityAI from "@/components/simulation-comp/voice-activity-ai";
 
 export const dynamic = "force-dynamic";
 
@@ -11,10 +11,10 @@ export default function FaceDetectionPage({
   return (
     <section>
       <div>
-        <ExamComp params={params} />
+        <SimulationAI params={params} />
       </div>
       <div>
-        <Vad />
+        <VoiceActivityAI />
       </div>
     </section>
   );

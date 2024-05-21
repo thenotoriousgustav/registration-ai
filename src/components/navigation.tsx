@@ -6,6 +6,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
 import Container from "./container";
 import { TextAlignJustifyIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
@@ -28,7 +29,7 @@ export default async function Navigation() {
   const session = await getSession();
 
   return (
-    <Container className="border-b py-6">
+    <Container className="border-b pt-4 pb-2">
       <nav className="flex justify-between">
         <Sheet key="left">
           <SheetTrigger asChild>

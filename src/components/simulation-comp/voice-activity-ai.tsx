@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-import { useMicVAD, utils } from '@ricky0123/vad-react';
-import { useState } from 'react';
+import { useMicVAD, utils } from "@ricky0123/vad-react";
+import { useState } from "react";
 
-export const Vad = () => {
+export default function VoiceActivityAI() {
   const [audioList, setAudioList] = useState<string[]>([]);
   const vad = useMicVAD({
     onSpeechEnd: (audio) => {
@@ -22,21 +22,21 @@ export const Vad = () => {
   return (
     <div>
       <h6>Listening</h6>
-      {!vad.listening && 'Not'} listening
+      {!vad.listening && "Not"} listening
       <h6>Loading</h6>
-      {!vad.loading && 'Not'} loading
+      {!vad.loading && "Not"} loading
       <h6>Errored</h6>
-      {!vad.errored && 'Not'} errored
+      {!vad.errored && "Not"} errored
       <h6>User Speaking</h6>
-      {!vad.userSpeaking && 'Not'} speaking
+      {!vad.userSpeaking && "Not"} speaking
       <h6>Audio count</h6>
       {audioList.length}
-      <div className='mt-10'>
+      <div className="mt-10">
         <button onClick={vad.pause}>Pause</button>
         <button onClick={vad.start}>Start</button>
         <button onClick={vad.toggle}>Toggle</button>
       </div>
-      <ol id='playlist'>
+      <ol id="playlist">
         {audioList.map((audioURL) => {
           return (
             <li key={audioURL.substring(-10)}>
@@ -47,6 +47,4 @@ export const Vad = () => {
       </ol>
     </div>
   );
-};
-
-export default Vad;
+}

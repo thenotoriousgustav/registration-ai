@@ -1,11 +1,11 @@
 "use client";
-import TakePhoto from "@/components/registration/form/take-photo";
-import { UploadIDCard } from "@/components/registration/form/upload-id-card";
+import TakePhoto from "@/components/exams-comp/registration-comp/take-photo";
+import { UploadIDCard } from "@/components/exams-comp/registration-comp/upload-id-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IoIosArrowBack } from "react-icons/io";
-import RegistrationForm from "@/components/registration/form/registration-form";
+import RegistrationForm from "@/components/exams-comp/registration-comp/registration-form";
 import { dataURLtoBlob } from "@/lib/utils";
 import { getSession } from "@/lib/session";
 import { useRouter } from "next/navigation";
@@ -90,7 +90,7 @@ export default function FormApplicantData({
           "message",
           "Successfully apply, please wait for further information"
         );
-        router.push("/exam/wait-exam");
+        router.push("/exams");
       }
     } catch (e) {
       console.log(e);

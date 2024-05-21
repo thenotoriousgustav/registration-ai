@@ -1,5 +1,5 @@
 import Container from "@/components/container";
-import CardUjian from "@/components/registration/exam-comp/exam-card";
+import ExamCard from "@/components/exams-comp/exam-card";
 
 import { GET } from "@/lib/httpClient";
 import { Suspense } from "react";
@@ -20,21 +20,28 @@ type Application = {
 };
 
 export default async function ExamPage() {
-  const applications = await GET<Application[]>("/applications");
   const exams = await GET<any>("/exams");
+  const applications = await GET<Application[]>(`/applications`);
 
   return (
-    <Container className="mt-20">
+    <Container className="my-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
         <Suspense fallback={<p className="text-center text-5xl">Loading...</p>}>
           {exams?.length > 0 ? (
-            exams?.map((exam: Exam) => {
+            exams?.map(async (exam: Exam) => {
               const application = applications?.find(
                 (app) => app.exam_id === exam.id
               );
               const status = application ? application.status : "";
 
-              return <CardUjian key={exam.id} exam={exam} status={status} />;
+              return (
+                <ExamCard
+                  key={exam.id}
+                  exam={exam}
+                  status={status}
+                  application={application}
+                />
+              );
             })
           ) : (
             <p className="col-span-full text-center">

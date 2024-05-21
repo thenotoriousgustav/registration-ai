@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { getSession } from "./session";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -19,8 +18,6 @@ async function fetchFromApi<T>({
   try {
     const session = await getSession();
     const accessToken = session?.accessToken;
-
-    console.log(accessToken);
 
     if (!accessToken) {
       console.error("No access token found");

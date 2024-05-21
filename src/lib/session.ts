@@ -8,17 +8,6 @@ import { NextRequest, NextResponse } from "next/server";
 const secretKey = process.env.SESSION_SECRET || "secret";
 const encodedKey = new TextEncoder().encode(secretKey);
 
-// type SessionPayload = {
-//   username: string;
-//   name: string;
-//   sub: string;
-//   picture: string;
-//   iat: number;
-//   exp: number;
-//   accessToken: string;
-//   expiresAt: Date | string;
-// };
-
 export async function encrypt(payload: any) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
@@ -46,11 +35,12 @@ export async function getSession() {
 
 export async function createSession(accessToken: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
   const session = await encrypt({ accessToken, expiresAt });
 
   cookies().set("session", session, {
-    httpOnly: true,
-    secure: true,
+    httpOnly: false,
+    secure: false,
     expires: expiresAt,
     sameSite: "lax",
     path: "/",
@@ -58,7 +48,7 @@ export async function createSession(accessToken: string) {
 }
 
 export async function updateSession(req: NextRequest) {
-  const session = cookies().get("session")?.value;
+  const session = req.cookies.get("session")?.value;
   const payload = await decrypt(session);
 
   if (!session || !payload) {

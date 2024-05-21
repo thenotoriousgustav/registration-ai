@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { GET } from "@/lib/httpClient";
 import Link from "next/link";
 
 export default async function VerifPage({

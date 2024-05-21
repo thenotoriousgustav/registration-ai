@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { RocketIcon } from "@radix-ui/react-icons";
 
-export default function FaceVerificationComp({ applications, params }: any) {
+export default function FaceVerificationAI({ application, params }: any) {
   const router = useRouter();
   const imageRef = useRef<HTMLImageElement>(null);
   const webcamRef = useRef<HTMLVideoElement>(null);
@@ -111,20 +111,20 @@ export default function FaceVerificationComp({ applications, params }: any) {
 
         const userOpenMouth = detection.expressions.surprised > 0.6;
 
-        const isAlignedRectWidthValid = (alignedRectBoxWidth: number) => {
-          return alignedRectBoxWidth >= 190 && alignedRectBoxWidth <= 260;
-        };
+        // const isAlignedRectWidthValid = (alignedRectBoxWidth: number) => {
+        //   return alignedRectBoxWidth >= 190 && alignedRectBoxWidth <= 260;
+        // };
 
         if (
           userOpenMouth &&
-          distance < 0.55 &&
-          isAlignedRectWidthValid(detection.alignedRect.box.width)
+          distance < 0.55
+          // && isAlignedRectWidthValid(detection.alignedRect.box.width)
         ) {
           setIsSuccess(true);
 
           setMatches("Face match!");
           setTimeout(() => {
-            router.push(`/exam/${params.slug}`);
+            router.push(`/simulation/${params.slug}`);
           }, 1000);
         } else if (distance < 0.55) {
           setMatches("Please open your mouth!");
@@ -172,10 +172,10 @@ export default function FaceVerificationComp({ applications, params }: any) {
           ref={imageRef}
           // src="/img/ktp-gustam.jpg"
           crossOrigin="anonymous" // Add this line
-          src={applications[0].photo}
+          src={application.photo}
           // src="/img/beken.png"
           alt="Selfie"
-          className="h-auto w-80 hidden"
+          className="h-auto w-80 "
         />
       </div>
 
@@ -190,4 +190,7 @@ export default function FaceVerificationComp({ applications, params }: any) {
       </Alert>
     </div>
   );
+}
+function isAlignedRectWidthValid(width: number) {
+  throw new Error("Function not implemented.");
 }

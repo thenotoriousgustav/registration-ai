@@ -15,7 +15,7 @@ import { RocketIcon } from "@radix-ui/react-icons";
 import { getSession } from "@/lib/session";
 import { dataURLtoBlob } from "@/lib/utils";
 
-export default function ExamComp({ params }: { params: { slug: string } }) {
+export default function SimulationAI({ params }: { params: { slug: string } }) {
   const webcamRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasDuaRef = useRef<HTMLCanvasElement>(null);
@@ -266,7 +266,7 @@ export default function ExamComp({ params }: { params: { slug: string } }) {
       setCameraMessage("Memulai Model...");
       detectFaces();
       runCoco();
-    }, 5000); // Delay for 5 seconds
+    }, 3000); // Delay for 5 seconds
 
     return () => {
       if (intervalRef.current) {

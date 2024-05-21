@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,6 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { formatDate, formatTime } from "@/lib/formatDatetime";
+import Image from "next/image";
 
 type Exam = {
   id: string;
@@ -33,9 +36,10 @@ type ApplicationStatus = string;
 type ExamCardProps = {
   exam: Exam;
   status: ApplicationStatus; // Ensure status is always of type ApplicationStatus
+  application: any;
 };
 
-export default function ExamCard({ exam, status }: ExamCardProps) {
+export default function ExamCard({ exam, status, application }: ExamCardProps) {
   const getButtonContent = () => {
     switch (status) {
       case "approved":
@@ -61,10 +65,16 @@ export default function ExamCard({ exam, status }: ExamCardProps) {
       default:
         return (
           <Button variant="outline" className="w-full" asChild>
-            <Link href={`/exams/${exam.id}`}>Daftar</Link>
+            <Link href={`/exams/registration/${exam.id}`}>Daftar</Link>
           </Button>
         );
     }
+  };
+
+  const profile = JSON.parse(application?.profile || "{}");
+
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -101,23 +111,48 @@ export default function ExamCard({ exam, status }: ExamCardProps) {
       <CardFooter className="p-4 bg-gray-100 rounded-b-lg">
         <Dialog>
           {getButtonContent()}
-          <DialogContent>
+          <DialogContent className="max-w-[40rem]">
             <DialogHeader>
               <DialogTitle>{exam.title}</DialogTitle>
-              <DialogDescription>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam,
-                facere earum officiis quis quas deleniti repudiandae ad alias
-                vero nesciunt?
-              </DialogDescription>
+              <h1 className="text-lg font-semibold">
+                Kementerian Keuangan - CAT
+              </h1>
             </DialogHeader>
-            <div className="py-4 flex ">
+            <div className="flex gap-x-8">
+              <div>
+                <Image
+                  src={application?.photo}
+                  alt={application?.name}
+                  height={0}
+                  width={0}
+                  sizes="100vw"
+                  className="w-48 object-cover rounded-lg"
+                />
+              </div>
+              <div className="text-sm font-semibold">
+                <h1>Nama: {application?.name}</h1>
+                <h1>NIK: {application?.id_card_no}</h1>
+                <h1>Tempat Lahir: {profile.pob}</h1>
+                <h1>Tanggal Lahir: {profile.dob}</h1>
+                <h1>Agama: {profile.religion}</h1>
+              </div>
+            </div>
+            <DialogDescription className="mt-4">
+              <p>Harap jangan menyebarkan kartu ujian ini.</p>
+            </DialogDescription>
+            <div className="py-4 flex justify-between">
               <p className="font-bold">
                 {formatTime(exam.start)} - {formatTime(exam.end)}
               </p>
             </div>
             <DialogFooter>
-              <Button variant="outline" className="mr-4" asChild>
-                <Link href={`/verification/${exam.id}`}>Mulai Ujian</Link>
+              <Button variant="outline" onClick={handlePrint}>
+                Print Kartu Ujian
+              </Button>
+              <Button variant="default" className="mr-4" asChild>
+                <Link href={`/verification/${application?.id}`}>
+                  Mulai Ujian
+                </Link>
               </Button>
             </DialogFooter>
           </DialogContent>
