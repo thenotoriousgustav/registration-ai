@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import { formatDate, formatTime } from "@/lib/formatDatetime";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -18,48 +19,38 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { formatDate, formatTime } from "@/lib/formatDatetime";
-import Image from "next/image";
+import Link from "next/link";
+import formatDuration from "@/lib/formatDuration";
 
-type Exam = {
-  id: string;
-  title: string;
-  start: string;
-  end: string;
-  reg_start: string;
-  reg_end: string;
-  status: ApplicationStatus;
-};
+import { LucideArrowRight } from "lucide-react";
 
-type ApplicationStatus = string;
+export default function ExamCard({ exam, status, application }: any) {
+  console.log(exam);
 
-type ExamCardProps = {
-  exam: Exam;
-  status: ApplicationStatus; // Ensure status is always of type ApplicationStatus
-  application: any;
-};
+  const handlePrint = () => {
+    window.print();
+  };
 
-export default function ExamCard({ exam, status, application }: ExamCardProps) {
   const getButtonContent = () => {
     switch (status) {
       case "approved":
         return (
           <DialogTrigger asChild>
             <Button variant="outline" className="w-full">
-              Lihat Kartu Ujian
+              View Exam Card
             </Button>
           </DialogTrigger>
         );
       case "initial":
         return (
           <Button variant="ghost" className="w-full">
-            Tunggu Di Approve Admin
+            Wait for Admin Approval
           </Button>
         );
       case "rejected":
         return (
           <Button variant="outline" className="w-full" asChild>
-            <Link href="/">Daftar Ulang</Link>
+            <Link href="/">Reapply</Link>
           </Button>
         );
       default:
@@ -71,74 +62,87 @@ export default function ExamCard({ exam, status, application }: ExamCardProps) {
     }
   };
 
-  const profile = JSON.parse(application?.profile || "{}");
-
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
-    <Card className="w-full lg:w-[350px] xl:w-[400px] h-auto hover:-translate-y-2 transform transition-all shadow-lg">
-      <CardHeader className="p-4 bg-primary text-white rounded-t-lg">
-        <CardTitle className="text-2xl font-semibold">{exam.title}</CardTitle>
+    <Card className="w-full hover:shadow-md transition-shadow duration-300 ">
+      <CardHeader className="p-4 rounded-t-lg ">
+        <CardTitle className="text-xl font-semibold">{exam.title}</CardTitle>
       </CardHeader>
-      <CardContent className="p-4 text-lg">
-        <div className="flex justify-between items-center bg-secondary rounded-xl p-4 mb-4">
+      <CardContent className="p-4 text-l ">
+        <div className="flex justify-between items-center bg-yellow-200 rounded-xl p-4 mb-4">
           <div>
-            <h1 className="text-sm">Mulai:</h1>
-            <p className="font-bold">{formatTime(exam.start)};</p>
+            <h1 className="text-sm">Start:</h1>
+            <p className="font-bold">{formatTime(exam.start)}</p>
             <p className="text-sm">{formatDate(exam.start)}</p>
           </div>
           <div>
-            <h1 className="text-sm">Selesai:</h1>
+            <LucideArrowRight />
+          </div>
+          <div>
+            <h1 className="text-sm">End:</h1>
             <p className="font-bold">{formatTime(exam.end)}</p>
             <p className="text-sm">{formatDate(exam.end)}</p>
           </div>
         </div>
-
+        <div className="flex justify-between my-5">
+          <div>
+            <h1 className="text-sm">Duration</h1>
+            <p className="font-medium">
+              {formatDuration(exam.settings.duration)}
+            </p>
+          </div>
+          <div>
+            <h1 className="text-sm">Questions</h1>
+            <p className="font-medium">{exam.settings.question_count}</p>
+          </div>
+        </div>
         <div className="mt-4">
-          {status === "approved" ? (
-            <h1 className="text-green-500">✅ Terdaftar</h1>
-          ) : status === "initial" ? (
-            <h1 className="text-yellow-500">⏳ Menunggu</h1>
-          ) : status === "rejected" ? (
-            <h1 className="text-red-500">❌ Ditolak</h1>
-          ) : (
-            <h1 className="text-gray-500">😭 Belum Terdaftar</h1>
-          )}
+          <h1 className="text-sm">Status</h1>
+          <div className="font-semibold">
+            {status === "approved" ? (
+              <h1>✅ Registered</h1>
+            ) : status === "initial" ? (
+              <h1>⏳ Waiting</h1>
+            ) : status === "rejected" ? (
+              <h1>❌ Rejected</h1>
+            ) : (
+              <h1>😭 Not Registered</h1>
+            )}
+          </div>
         </div>
       </CardContent>
-      <CardFooter className="p-4 bg-gray-100 rounded-b-lg">
+      <CardFooter className="p-4  ">
+        {/* //! Dialog */}
         <Dialog>
           {getButtonContent()}
           <DialogContent className="max-w-[40rem]">
             <DialogHeader>
               <DialogTitle>{exam.title}</DialogTitle>
               <h1 className="text-lg font-semibold">
-                Kementerian Keuangan - CAT
+                Ministry of Finance - CAT
               </h1>
             </DialogHeader>
-            <div className="flex gap-x-8">
-              <div>
-                <Image
-                  src={application?.photo}
-                  alt={application?.name}
-                  height={0}
-                  width={0}
-                  sizes="100vw"
-                  className="w-48 object-cover rounded-lg"
-                />
+            {application && (
+              <div className="flex gap-x-8">
+                <div>
+                  <Image
+                    src={application.photo}
+                    alt={application.name}
+                    height={200}
+                    width={200}
+                    className="rounded-lg"
+                  />
+                </div>
+                <div className="text-sm font-semibold">
+                  <h1>Name: {application.name}</h1>
+                  <h1>NIK: {application.id_card_no}</h1>
+                  <h1>Place of Birth: {application.profile.pob}</h1>
+                  <h1>Date of Birth: {application.profile.dob}</h1>
+                  <h1>Religion: {application.profile.religion}</h1>
+                </div>
               </div>
-              <div className="text-sm font-semibold">
-                <h1>Nama: {application?.name}</h1>
-                <h1>NIK: {application?.id_card_no}</h1>
-                <h1>Tempat Lahir: {profile.pob}</h1>
-                <h1>Tanggal Lahir: {profile.dob}</h1>
-                <h1>Agama: {profile.religion}</h1>
-              </div>
-            </div>
+            )}
             <DialogDescription className="mt-4">
-              <p>Harap jangan menyebarkan kartu ujian ini.</p>
+              <p>Please do not share this exam card.</p>
             </DialogDescription>
             <div className="py-4 flex justify-between">
               <p className="font-bold">
@@ -147,11 +151,11 @@ export default function ExamCard({ exam, status, application }: ExamCardProps) {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={handlePrint}>
-                Print Kartu Ujian
+                Print Exam Card
               </Button>
-              <Button variant="default" className="mr-4" asChild>
+              <Button variant="default" asChild className="mr-4">
                 <Link href={`/verification/${application?.id}`}>
-                  Mulai Ujian
+                  Start Exam
                 </Link>
               </Button>
             </DialogFooter>

@@ -10,10 +10,10 @@ import { dataURLtoBlob } from "@/lib/utils";
 import { getSession } from "@/lib/session";
 import { useRouter } from "next/navigation";
 
-export default function FormApplicantData({
+export default function RegistrationExam({
   params,
 }: {
-  params: { slug: string };
+  params: { examId: string };
 }) {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const router = useRouter();
@@ -64,7 +64,7 @@ export default function FormApplicantData({
       console.log(filePhoto);
 
       const applicantData = new FormData();
-      applicantData.append("exam_id", params.slug);
+      applicantData.append("exam_id", params.examId);
       applicantData.append("name", formValue.name);
       applicantData.append("photo", filePhoto);
       applicantData.append("id_card_type", formValue.idCardType);
@@ -90,7 +90,7 @@ export default function FormApplicantData({
           "message",
           "Successfully apply, please wait for further information"
         );
-        router.push("/exams");
+        router.push("/");
       }
     } catch (e) {
       console.log(e);

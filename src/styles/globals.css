@@ -70,5 +70,10 @@
 @layer base {
   * {
     @apply border-border;
+    font-family: var(--font-sans);
   }
+}
+
+.with-cutout {
+  clip-path: polygon(26px 0, 100% 0, 100% 100%, 0 100%, 0 26px);
 }

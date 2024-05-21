@@ -76,11 +76,16 @@ export function AuthButton({ session, profile }: AuthButtonProps) {
   };
 
   return (
-    <div>
+    <div className="mr-4">
       {session && profile ? (
         <Dropdown profile={profile} />
       ) : (
-        <Button onClick={handleLogin}>Log in</Button>
+        <Button
+          onClick={handleLogin}
+          className="w-full cursor-pointer rounded-2xl px-6"
+        >
+          Log in
+        </Button>
       )}
     </div>
   );

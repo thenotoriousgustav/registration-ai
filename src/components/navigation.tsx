@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -29,42 +30,47 @@ export default async function Navigation() {
   const session = await getSession();
 
   return (
-    <Container className="border-b pt-4 pb-2">
+    <Container className="py-4">
       <nav className="flex justify-between">
-        <Sheet key="left">
-          <SheetTrigger asChild>
-            <Button variant="link" className="p-0">
-              <TextAlignJustifyIcon width="36" height="36" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left">
-            <SheetHeader>
-              <SheetTitle>Computer Assisted Test</SheetTitle>
-              {/* <SheetDescription>Ini Navigasi Cat</SheetDescription> */}
-            </SheetHeader>
-            <div className="flex flex-col items-start mt-10">
-              <Button
-                variant="link"
-                className="p-0 text-lg font-medium"
-                asChild
-              >
-                <Link href="/">Home</Link>
-              </Button>
-              <Button
-                variant="link"
-                className="p-0 text-lg font-medium"
-                asChild
-              >
-                <Link href="/exam">Exam</Link>
-              </Button>
-            </div>
+        <div>
+          <Link href="/" className="text-lg font-semibold">
+            Kemenkeu CAT
+          </Link>
+        </div>
 
-            <Separator className="my-6" />
-          </SheetContent>
-        </Sheet>
-
-        <AuthButton session={session} profile={profile} />
+        <div className="flex items-center">
+          <AuthButton session={session} profile={profile} />
+          <NavigationSheet />
+        </div>
       </nav>
     </Container>
   );
 }
+
+const NavigationSheet = () => {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="link" className="p-0">
+          <TextAlignJustifyIcon width="36" height="36" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="with-cutout">
+        <SheetHeader>
+          <SheetTitle>Kemenkeu</SheetTitle>
+          <SheetDescription>Computer Assisted Test</SheetDescription>
+        </SheetHeader>
+        <div className="flex flex-col items-start mt-10">
+          <Button variant="link" className="p-0 text-lg font-medium" asChild>
+            <Link href="/">Home</Link>
+          </Button>
+          <Button variant="link" className="p-0 text-lg font-medium" asChild>
+            <Link href="/exams">Exams</Link>
+          </Button>
+        </div>
+
+        <Separator className="my-6" />
+      </SheetContent>
+    </Sheet>
+  );
+};
