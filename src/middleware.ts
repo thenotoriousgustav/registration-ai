@@ -26,16 +26,6 @@ export default async function middleware(req: NextRequest) {
     await updateSession(req);
   }
 
-  //! 4. Check if the exam exists
-  if (path.startsWith("/exams/")) {
-    const examId = path.split("/")[2];
-    const exam = await GET(`/exams/${examId}`);
-
-    if (!exam) {
-      return NextResponse.redirect(new URL("/", req.nextUrl));
-    }
-  }
-
   //! 5. Redirect to /login if the user is not authenticated
   if (isProtectedRoute && !session) {
     return NextResponse.redirect(

@@ -90,7 +90,7 @@ export default function RegistrationExamPage({
           "message",
           "Successfully apply, please wait for further information"
         );
-        router.push("/exams");
+        router.push("/");
       }
     } catch (e) {
       console.log(e);

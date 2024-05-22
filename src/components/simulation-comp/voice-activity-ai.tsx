@@ -8,6 +8,17 @@ import { useState } from "react";
 export default function VoiceActivityAI() {
   const [audioList, setAudioList] = useState<string[]>([]);
   const vad = useMicVAD({
+    workletURL: "/_next/static/chunks/vad.worklet.bundle.min.js",
+    modelURL: "/_next/static/chunks/silero_vad.onnx",
+    modelFetcher: (path) => {
+      const filename = path.split("/").pop();
+      return fetch(`/_next/static/chunks/${filename}`).then((model) =>
+        model.arrayBuffer()
+      );
+    },
+    ortConfig: (ort) => {
+      ort.env.wasm.wasmPaths = "/_next/static/chunks/";
+    },
     onSpeechEnd: (audio) => {
       const wavBuffer = utils.encodeWAV(audio);
       const base64 = utils.arrayBufferToBase64(wavBuffer);
