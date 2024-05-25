@@ -2,10 +2,15 @@
 
 export const dynamic = "force-dynamic";
 
+import { getSession } from "@/lib/session";
 import { useMicVAD, utils } from "@ricky0123/vad-react";
 import { useState } from "react";
 
-export default function VoiceActivityAI() {
+export default function VoiceActivityAI({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const [audioList, setAudioList] = useState<string[]>([]);
   const vad = useMicVAD({
     workletURL: "/_next/static/chunks/vad.worklet.bundle.min.js",
@@ -19,13 +24,39 @@ export default function VoiceActivityAI() {
     ortConfig: (ort) => {
       ort.env.wasm.wasmPaths = "/_next/static/chunks/";
     },
-    onSpeechEnd: (audio) => {
+    onSpeechEnd: async (audio) => {
       const wavBuffer = utils.encodeWAV(audio);
       const base64 = utils.arrayBufferToBase64(wavBuffer);
       const url = `data:audio/wav;base64,${base64}`;
       setAudioList((old) => {
         return [url, ...old];
       });
+
+      // Create a blob from the WAV buffer
+      const blob = new Blob([wavBuffer], { type: "audio/wav" });
+
+      const session = await getSession();
+      const accessToken = session?.accessToken;
+
+      // Prepare the form data
+      const formData = new FormData();
+      formData.append("application_id", params.slug);
+      formData.append("note", "Audio evidence"); // Add any relevant note
+      formData.append("status", "exam");
+      formData.append("file", blob, "audio.wav");
+
+      // Send the form data to the server
+      try {
+        await fetch("http://localhost:3001/evidences", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Ensure you have the accessToken defined and set properly
+          },
+          body: formData,
+        });
+      } catch (error) {
+        console.error("Error sending audio:", error);
+      }
     },
   });
 

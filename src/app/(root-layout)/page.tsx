@@ -1,62 +1,46 @@
-import Link from "next/link";
 import Container from "@/components/container";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { TextShimmer } from "@/components/home-comp/animated-shiny-test";
+
+import Bento from "@/components/home-comp/bento";
+import DotPattern from "@/components/home-comp/dot-pattern";
+import { cn } from "@/lib/utils";
+import { ArrowRightIcon } from "lucide-react";
 
 export default function Home() {
   return (
-    <section className="mt-2 mb-4">
-      <Container className="flex flex-col lg:flex-row gap-y-8 lg:gap-y-0 gap-x-3">
-        <div className="relative lg:w-4/12 w-full ">
-          <div className="bg-yellow-300 with-cutout p-6 h-[30rem] lg:h-[40rem] flex flex-col justify-between rounded-sm">
-            <div>
-              <h1 className="text-6xl font-bold ">Kemenkeu</h1>
-              <h1 className="text-2xl font-medium mt-2">
-                Computer Assisted Test Powered With AI Technology 🤖
-              </h1>
-            </div>
-            <p className="mb-20 text-lg">
-              Welcome to the future of assessments. Our AI-powered exams
-              revolutionize the way you evaluate and excel
-            </p>
-          </div>
-          <div className="bg-orange-500 p-6 with-cutout absolute w-full bottom-0 left-0 h-5/12 h-20 rounded-sm">
-            <Button className="ml-4" variant="roundedNone" asChild>
-              <Link href="/exams">Go to Exams</Link>
-            </Button>
-          </div>
+    <section className="mt-8 mb-4 h-full w-full">
+      <Container className="flex flex-col items-center justify-center my-20">
+        <div
+          className={cn(
+            "group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
+          )}
+        >
+          <TextShimmer className="inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
+            <span>✨ Introducing Kemenkeu CAT</span>
+            <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+          </TextShimmer>
         </div>
 
-        {/* //!sadasdas */}
-        <div className="relative lg:w-8/12 w-full ">
-          <div className="bg-gray-200 with-cutout p-5 h-full lg:h-[40rem] flex flex-col justify-between gap-y-6 lg:gap-y-0 rounded-sm">
-            <div className="bg-red-200 p-6 with-cutout">
-              <h1 className="text-7xl font-semibold">Exam With AI</h1>
-              <p className="mt-8 text-sm">
-                Discover the next generation of examinations with our AI-powered
-                testing platform. Designed to provide a seamless, intelligent,
-                and personalized assessment experience, our platform leverages
-                the power of artificial intelligence to revolutionize the way
-                you evaluate and excel.
-              </p>
-            </div>
-            <div className="mb-20">
-              <Image
-                src="/img/view.jpeg"
-                alt="asd"
-                width="0"
-                height="0"
-                sizes="100vw"
-                className="mx-auto h-64 w-full object-cover with-cutout"
-              />
-            </div>
-          </div>
-          <div className="bg-orange-500 p-6 with-cutout absolute w-full bottom-0 left-0 h-20 rounded-sm">
-            <Button className="ml-4" variant="roundedNone" asChild>
-              <Link href="/profile">Go to Profile</Link>
-            </Button>
-          </div>
+        <div className="flex flex-col items-center justify-center text-center mt-16 mb-20 z-10">
+          <h1 className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center text-8xl font-bold leading-none tracking-tighter text-transparent">
+            Computer Assisted Test.
+          </h1>
+          <h2 className="text-5xl font-medium mt-6">Kementerian Keuangan.</h2>
+          <p className="w-7/12 text-gray-600 mt-8">
+            Our platform leverages advanced artificial intelligence to ensure
+            accurate, fair, and efficient evaluations. Experience unparalleled
+            precision in scoring and feedback, tailored to help you understand
+            your strengths and areas for improvement.
+          </p>
         </div>
+
+        <DotPattern
+          className={cn(
+            "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]"
+          )}
+        />
+
+        <Bento />
       </Container>
     </section>
   );

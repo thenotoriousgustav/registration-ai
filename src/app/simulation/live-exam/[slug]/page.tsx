@@ -10,7 +10,7 @@ export default function LiveExamPage({ params }: { params: { slug: string } }) {
         <SimulationAI params={params} />
       </div>
       <div>
-        <VoiceActivityAI />
+        <VoiceActivityAI params={params} />
       </div>
     </section>
   );
