@@ -8,12 +8,14 @@ import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { RocketIcon } from "@radix-ui/react-icons";
+import { Spinner } from "./spinner";
 
 export default function FaceVerificationComp({ applications }: any) {
   const router = useRouter();
   const imageRef = useRef<HTMLImageElement>(null);
   const webcamRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [loading, setLoading] = useState(true);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -102,6 +104,8 @@ export default function FaceVerificationComp({ applications }: any) {
         .withFaceDescriptor();
 
       if (imageFaceDetection && webcamFaceDetection) {
+        setLoading(false);
+
         const distance = faceapi.euclideanDistance(
           imageFaceDetection.descriptor,
           webcamFaceDetection.descriptor
@@ -162,6 +166,7 @@ export default function FaceVerificationComp({ applications }: any) {
   }, [isSuccess]);
   return (
     <div className="flex flex-col h-full items-center justify-center">
+      {loading && <Spinner />}
       <div>
         <canvas ref={canvasRef} className="absolute"></canvas>
         <video

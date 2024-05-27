@@ -2,13 +2,14 @@
 import TakePhoto from "@/components/registration/form/take-photo";
 import { UploadIDCard } from "@/components/registration/form/upload-id-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IoIosArrowBack } from "react-icons/io";
 import RegistrationForm from "@/components/registration/form/registration-form";
 import { dataURLtoBlob } from "@/lib/utils";
 import { getSession } from "@/lib/session";
 import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/spinner";
 
 export default function FormApplicantData({
   params,
@@ -19,6 +20,7 @@ export default function FormApplicantData({
   const router = useRouter();
 
   const [step, setStep] = useState<string>("1");
+  const [loading, setLoading] = useState(false);
   const [formValue, setFormValue] = useState({
     examId: "",
     userId: "",
@@ -35,8 +37,17 @@ export default function FormApplicantData({
     address: "",
   });
 
+  useEffect(() => {
+    if (loading) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+    }
+  }, [loading]);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
+      setLoading(true);
       event.preventDefault();
       const session = await getSession();
       const accessToken = session?.accessToken;
@@ -97,6 +108,7 @@ export default function FormApplicantData({
 
   return (
     <div className="w-full h-screen  pb-10 flex justify-center py-10 ">
+      {loading && <Spinner />}
       <Button
         className="top-8 left-5 absolute  transform hover:scale-105 duration-1000"
         variant="link"
