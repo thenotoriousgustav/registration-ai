@@ -32,13 +32,8 @@ export default function RootLayout({
         )}
       >
         <LoadingBar>
-          <header>
-            <Navigation />
-          </header>
           <main className="flex-grow">{children}</main>
-          <footer className="bg-secondary w-full">
-            <Footer />
-          </footer>
+
           <ToasterProvider />
         </LoadingBar>
       </body>

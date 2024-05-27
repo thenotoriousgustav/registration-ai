@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt, getSession, updateSession } from "@/lib/session";
-import { cookies } from "next/headers";
-import { GET } from "./lib/httpClient";
-import jwt from "jsonwebtoken";
+import { getSession, updateSession } from "@/lib/session";
 
 //! 1. Specify protected and public routes
 const protectedRoutes = [
@@ -28,21 +25,15 @@ export default async function middleware(req: NextRequest) {
 
   //! 5. Redirect to /login if the user is not authenticated
   if (isProtectedRoute && !session) {
-    return NextResponse.redirect(
-      new URL("http://localhost:3001/auth/google/login", req.nextUrl)
-    );
+    return NextResponse.redirect(new URL("/auth", req.nextUrl));
   }
 
-  // !6. Redirect to /dashboard if the user is authenticated
-  // if (
-  //   isPublicRoute &&
-  //   session &&
-  //   !req.nextUrl.pathname.startsWith("/pilih-ujian")
-  // ) {
-  //   return NextResponse.redirect(new URL("/pilih-ujian", req.nextUrl));
+  // !6. Redirect to /exams if the user is authenticated
+  // if (isPublicRoute && session && !req.nextUrl.pathname.startsWith("/exams")) {
+  //   return NextResponse.redirect(new URL("/exams", req.nextUrl));
   // }
 
-  // return NextResponse.next();
+  return NextResponse.next();
 }
 
 // Routes Middleware should not run on

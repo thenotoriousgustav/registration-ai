@@ -3,7 +3,6 @@ import { Inter as FontSans } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
-import LoadingBar from "@/components/loading-bar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -20,18 +19,14 @@ export default function VerificationLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          "min-h-screen flex items-center justify-center flex-col bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-      >
-        <LoadingBar>
-          <main>{children}</main>
-        </LoadingBar>
-        <Toaster />
-      </body>
-    </html>
+    <main
+      className={cn(
+        "h-screen w-full flex items-center justify-center flex-col",
+        fontSans.variable
+      )}
+    >
+      {children}
+      <Toaster />
+    </main>
   );
 }

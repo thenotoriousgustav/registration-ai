@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -6,22 +5,26 @@ import * as faceapi from "@vladmandic/face-api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
 import { RocketIcon } from "@radix-ui/react-icons";
 
-export default function FaceVerificationAI({ application, params }: any) {
+interface FaceVerificationAIProps {
+  photo: string;
+  params: {
+    slug: string;
+  };
+}
+
+export default function FaceVerificationAI({
+  photo,
+  params,
+}: FaceVerificationAIProps) {
   const router = useRouter();
-  const imageRef = useRef<HTMLImageElement>(null);
   const webcamRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [matches, setMatches] = useState<string>("");
 
   useEffect(() => {
-    // load models
     const loadModels = async () => {
       await Promise.all([
         faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
@@ -33,7 +36,6 @@ export default function FaceVerificationAI({ application, params }: any) {
       ]);
     };
 
-    // start webcam video
     const startVideo = () => {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: false })
@@ -42,14 +44,14 @@ export default function FaceVerificationAI({ application, params }: any) {
             webcamRef.current.srcObject = stream;
           }
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error("Error starting video stream:", err));
     };
 
-    // detect faces logic and function
-    const detectFaces = async () => {
-      const canvas = canvasRef.current!;
-      const image = imageRef.current!;
-      const webcam = webcamRef.current!;
+    const detectFaces = async (image: HTMLImageElement) => {
+      if (!webcamRef.current || !canvasRef.current) return;
+
+      const webcam = webcamRef.current;
+      const canvas = canvasRef.current;
 
       const detection = await faceapi
         .detectSingleFace(webcam, new faceapi.SsdMobilenetv1Options())
@@ -62,17 +64,11 @@ export default function FaceVerificationAI({ application, params }: any) {
         return;
       }
 
-      const displaySize = {
-        width: webcam.width,
-        height: webcam.height,
-      };
-
+      const displaySize = { width: webcam.width, height: webcam.height };
       faceapi.matchDimensions(canvas, displaySize);
 
       const resizedDetections = faceapi.resizeResults([detection], displaySize);
-
       const context = canvas.getContext("2d");
-
       if (context) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         faceapi.draw.drawDetections(canvas, resizedDetections);
@@ -83,7 +79,7 @@ export default function FaceVerificationAI({ application, params }: any) {
           const { age, gender, genderProbability } = result;
           new faceapi.draw.DrawTextField(
             [
-              `${Math.round(age)} Tahun`,
+              `${Math.round(age)} years`,
               `${gender} ${Math.round(genderProbability * 100)}%`,
             ],
             result.detection.box.bottomRight
@@ -107,21 +103,10 @@ export default function FaceVerificationAI({ application, params }: any) {
           webcamFaceDetection.descriptor
         );
 
-        console.log(detection?.alignedRect.box.width);
-
         const userOpenMouth = detection.expressions.surprised > 0.6;
 
-        // const isAlignedRectWidthValid = (alignedRectBoxWidth: number) => {
-        //   return alignedRectBoxWidth >= 190 && alignedRectBoxWidth <= 260;
-        // };
-
-        if (
-          userOpenMouth &&
-          distance < 0.55
-          // && isAlignedRectWidthValid(detection.alignedRect.box.width)
-        ) {
+        if (userOpenMouth && distance < 0.55) {
           setIsSuccess(true);
-
           setMatches("Face match!");
           setTimeout(() => {
             router.push(`/simulation/${params.slug}`);
@@ -134,25 +119,29 @@ export default function FaceVerificationAI({ application, params }: any) {
       }
     };
 
-    startVideo();
-    loadModels();
+    const initialize = async () => {
+      await loadModels();
+      startVideo();
 
-    intervalRef.current = setInterval(() => {
-      detectFaces();
-    }, 100);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      const image = await faceapi.fetchImage(photo);
+      if (!(image instanceof HTMLImageElement)) {
+        console.error("Failed to fetch the image");
+        return;
       }
+
+      const interval = setInterval(() => detectFaces(image), 100);
+      return () => clearInterval(interval);
     };
-  }, []);
+
+    initialize();
+  }, [photo, params.slug, router]);
 
   useEffect(() => {
     if (isSuccess) {
       toast.success("Face Match!");
     }
   }, [isSuccess]);
+
   return (
     <div className="flex flex-col h-full items-center justify-center">
       <div>
@@ -166,31 +155,15 @@ export default function FaceVerificationAI({ application, params }: any) {
           className="rounded-md shadow-lg"
         ></video>
       </div>
-
-      <div>
-        <img
-          ref={imageRef}
-          // src="/img/ktp-gustam.jpg"
-          crossOrigin="anonymous" // Add this line
-          src={application.photo}
-          // src="/img/beken.png"
-          alt="Selfie"
-          className="h-auto w-80 hidden"
-        />
-      </div>
-
-      <Alert className="mt-6 py-4 flex flex-row justify-start items-center space-x-10 ">
+      <Alert className="mt-6 py-4 flex flex-row justify-start items-center space-x-10">
         <RocketIcon className="h-4 w-4" />
         <div>
           <AlertTitle>{matches}</AlertTitle>
           <AlertDescription>
-            Ikuti Perintah dan arahan yang diberikan oleh sistem
+            Follow the instructions and guidelines provided by the system
           </AlertDescription>
         </div>
       </Alert>
     </div>
   );
-}
-function isAlignedRectWidthValid(width: number) {
-  throw new Error("Function not implemented.");
 }

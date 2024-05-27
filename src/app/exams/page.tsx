@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Container from "@/components/container";
 import ExamCard from "@/components/exams-comp/exam-card";
 
@@ -10,8 +12,8 @@ export default async function ExamsPage() {
 
   return (
     <Container className="my-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 place-items-center">
-        <Suspense fallback={<p className="text-center text-5xl">Loading...</p>}>
+      <Suspense fallback={<p className="text-center text-5xl">Loading...</p>}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 place-items-center">
           {exams?.length > 0 ? (
             exams?.map(async (exam: any) => {
               const application = applications?.find(
@@ -29,12 +31,10 @@ export default async function ExamsPage() {
               );
             })
           ) : (
-            <p className="col-span-full text-center">
-              Tidak ada ujian tersedia
-            </p>
+            <p className="col-span-full text-center">No exams available</p>
           )}
-        </Suspense>
-      </div>
+        </div>
+      </Suspense>
     </Container>
   );
 }

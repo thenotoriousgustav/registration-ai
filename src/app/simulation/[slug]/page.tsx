@@ -1,34 +1,41 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React from "react";
 
-export default function SimulationPage({
+export default async function VerificationPage({
   params,
 }: {
   params: { slug: string };
 }) {
   return (
-    <section className="w-full h-screen flex flex-col justify-center items-center">
-      <div className="w-10/12">
-        <h2 className="text-4xl text-red-500 font-bold">
-          Ujian ini diawasi oleh Sistem Ujian Anti Curang berbasis AI
-        </h2>
+    <div>
+      <h1 className="text-4xl font-semibold text-red-500">
+        This Exam is Monitored by an AI-based Anti-Cheating System
+      </h1>
 
-        <ul className="mt-6 text-lg">
-          <li>Peserta Ujian dilarang menggunakan device lain untuk ujian</li>
-          <li>User dilarang meminta bantuan kepada orang lain</li>
-        </ul>
+      <ul className="mt-6 text-lg list-disc list-inside">
+        <li>
+          Candidates are prohibited from using any other device during the exam
+        </li>
+        <li>Candidates are forbidden from seeking assistance from others</li>
+        <li>
+          Ensure you are alone in a quiet environment with no interruptions
+        </li>
+        <li>Make sure your webcam and microphone are working properly</li>
+        <li>
+          Any suspicious activity will be flagged and may result in
+          disqualification
+        </li>
+      </ul>
+      <p className="mt-4 text-gray-500">
+        By proceeding with the exam, you agree to comply with all the rules and
+        regulations set forth.
+      </p>
 
-        <p className="mt-4 text-gray-500">
-          Dengan melanjutkan ujian, anda menyetujui peraturan yang berlaku
-        </p>
-
+      <div className="mt-6">
         <Button variant={"default"} asChild className="mt-10">
-          <Link href={`/simulation/live-exam/${params.slug}`}>
-            Lanjut Ujian
-          </Link>
+          <Link href={`/simulation/live-exam/${params.slug}`}>Start Exam</Link>
         </Button>
       </div>
-    </section>
+    </div>
   );
 }

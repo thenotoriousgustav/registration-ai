@@ -60,7 +60,6 @@ export default function VoiceActivityAI({
     },
   });
 
-  console.log(vad);
   return (
     <div>
       <h6>Listening</h6>

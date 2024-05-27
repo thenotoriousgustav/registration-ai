@@ -9,6 +9,7 @@ import {
   InputIcon,
 } from "@radix-ui/react-icons";
 import { GET } from "@/lib/httpClient";
+import { Calendar } from "../ui/calendar";
 
 export default async function Bento() {
   const exams = await GET<any>("/exams");
@@ -94,13 +95,13 @@ export default async function Bento() {
       className: "col-span-3 lg:col-span-1",
       href: "/",
       cta: "Contact Us",
-      // background: (
-      //   <Calendar
-      //     mode="single"
-      //     selected={new Date(2022, 4, 11, 0, 0, 0)}
-      //     className="absolute right-0 top-10 origin-top rounded-md border transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)] group-hover:scale-105"
-      //   />
-      // ),
+      background: (
+        <Calendar
+          mode="single"
+          selected={new Date(2022, 4, 11, 0, 0, 0)}
+          className="absolute right-0 top-10 origin-top rounded-md border transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)] group-hover:scale-105"
+        />
+      ),
     },
   ];
 

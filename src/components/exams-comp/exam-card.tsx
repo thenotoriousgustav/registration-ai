@@ -22,7 +22,7 @@ import {
 import Link from "next/link";
 import formatDuration from "@/lib/formatDuration";
 
-import { LucideArrowRight } from "lucide-react";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 export default function ExamCard({ exam, status, application }: any) {
   return (
@@ -38,7 +38,7 @@ export default function ExamCard({ exam, status, application }: any) {
             <p className="text-sm">{formatDate(exam.start)}</p>
           </div>
           <div>
-            <LucideArrowRight />
+            <ArrowRightIcon />
           </div>
           <div>
             <h1 className="text-sm">End:</h1>

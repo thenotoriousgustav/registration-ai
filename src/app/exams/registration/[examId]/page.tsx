@@ -1,4 +1,5 @@
 "use client";
+
 import TakePhoto from "@/components/exams-comp/registration-comp/take-photo";
 import { UploadIDCard } from "@/components/exams-comp/registration-comp/upload-id-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

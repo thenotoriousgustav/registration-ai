@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/toaster-provider";
-import LoadingBar from "@/components/loading-bar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -24,24 +23,20 @@ export default function ExamsLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          "min-h-screen flex flex-col bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-      >
-        <LoadingBar>
-          <header>
-            <Navigation />
-          </header>
-          <main className="flex-grow">{children}</main>
-          <footer className="bg-secondary w-full">
-            <Footer />
-          </footer>
-          <ToasterProvider />
-        </LoadingBar>
-      </body>
-    </html>
+    <div
+      className={cn(
+        "min-h-screen flex flex-col bg-background font-sans antialiased",
+        fontSans.variable
+      )}
+    >
+      <header>
+        <Navigation />
+      </header>
+      <main className="flex-grow">{children}</main>
+      <footer className="bg-secondary w-full">
+        <Footer />
+      </footer>
+      <ToasterProvider />
+    </div>
   );
 }

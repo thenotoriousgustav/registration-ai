@@ -7,9 +7,7 @@ import {
   load as cocoSSDLoad,
   ObjectDetection,
 } from "@tensorflow-models/coco-ssd";
-
 import { drawRect } from "@/utils/drawRect";
-
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { RocketIcon } from "@radix-ui/react-icons";
 import { getSession } from "@/lib/session";
@@ -31,15 +29,18 @@ export default function SimulationAI({ params }: { params: { slug: string } }) {
 
   const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
 
-  const startVideo = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: false })
-      .then((stream) => {
-        if (webcamRef.current) {
-          webcamRef.current.srcObject = stream;
-        }
-      })
-      .catch((err) => console.error(err));
+  const startVideo = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+      if (webcamRef.current) {
+        webcamRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Error accessing webcam:", err);
+    }
   };
 
   const captureScreenshot = () => {
@@ -99,7 +100,7 @@ export default function SimulationAI({ params }: { params: { slug: string } }) {
     return false;
   };
 
-  const detectFaces = () => {
+  const detectFaces = async () => {
     const video = webcamRef.current;
     const canvas = canvasRef.current;
 
@@ -134,7 +135,7 @@ export default function SimulationAI({ params }: { params: { slug: string } }) {
       }
 
       if (detections.length > 1) {
-        const message = `terdeteksi ${detections.length} wajah disekitar anda!`;
+        const message = `Terdeteksi ${detections.length} wajah di sekitar Anda!`;
         setFaceMessage(message);
         if (shouldCaptureScreenshot()) {
           const screenshot = captureScreenshot();
@@ -176,10 +177,10 @@ export default function SimulationAI({ params }: { params: { slug: string } }) {
     }, 300);
   };
 
-  async function runObjectDetection(net: ObjectDetection) {
+  const runObjectDetection = async (net: ObjectDetection) => {
     if (
       canvasDuaRef.current &&
-      webcamRef.current !== null &&
+      webcamRef.current &&
       webcamRef.current.readyState === 4
     ) {
       // Set canvas height and width
@@ -215,7 +216,7 @@ export default function SimulationAI({ params }: { params: { slug: string } }) {
           }
         }
       } else if (isMultiplePeopleDetected) {
-        const message = "Ada orang lain disekitar Anda!";
+        const message = "Ada orang lain di sekitar Anda!";
         setObjectMessage(message);
         if (shouldCaptureScreenshot()) {
           const screenshot = captureScreenshot();
@@ -235,17 +236,17 @@ export default function SimulationAI({ params }: { params: { slug: string } }) {
         drawRect(detectedObjects, context);
       }
     }
-  }
+  };
 
-  async function runCoco() {
+  const runCoco = async () => {
     // Load network
     const net = await cocoSSDLoad();
 
     // Loop to detect objects
     detectInterval.current = setInterval(() => {
       runObjectDetection(net);
-    }, 100);
-  }
+    }, 300);
+  };
 
   useEffect(() => {
     const loadModels = async () => {
@@ -257,16 +258,15 @@ export default function SimulationAI({ params }: { params: { slug: string } }) {
         faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
         faceapi.nets.faceExpressionNet.loadFromUri("/models"),
       ]);
-      startVideo();
+
+      await startVideo();
     };
 
-    loadModels();
-
-    setTimeout(() => {
+    loadModels().then(() => {
       setCameraMessage("Memulai Model...");
       detectFaces();
       runCoco();
-    }, 3000); // Delay for 5 seconds
+    });
 
     return () => {
       if (intervalRef.current) {

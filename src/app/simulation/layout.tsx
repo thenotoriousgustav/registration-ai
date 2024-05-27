@@ -19,17 +19,13 @@ export default function SimulationLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          "min-h-screen flex items-center justify-center flex-col bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-      >
-        <LoadingBar>
-          <main>{children}</main>
-        </LoadingBar>
-      </body>
-    </html>
+    <main
+      className={cn(
+        "w-full min-h-screen flex items-center justify-center flex-col ",
+        fontSans.variable
+      )}
+    >
+      {children}
+    </main>
   );
 }

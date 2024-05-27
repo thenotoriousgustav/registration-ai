@@ -13,7 +13,7 @@ import { TextAlignJustifyIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { getSession } from "@/lib/session";
-import { AuthButton } from "./auth-button";
+import { ProfileAvatar } from "./profile-avatar";
 import { GET } from "@/lib/httpClient";
 
 type Profile = {
@@ -31,15 +31,19 @@ export default async function Navigation() {
 
   return (
     <Container className="py-4">
-      <nav className="flex justify-between">
-        <div>
+      <nav className="flex justify-between items-center">
+        <div className="flex items-center space-x-10">
           <Link href="/" className="text-lg font-semibold">
             Kemenkeu CAT
           </Link>
+          <div className="space-x-8 text-gray-500 hidden lg:block">
+            <Link href="/exams">Exams</Link>
+            <Link href="/contact">Contact Us</Link>
+          </div>
         </div>
 
         <div className="flex items-center">
-          <AuthButton session={session} profile={profile} />
+          <ProfileAvatar session={session} profile={profile} />
           <NavigationSheet />
         </div>
       </nav>
@@ -51,7 +55,7 @@ const NavigationSheet = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="link" className="p-0">
+        <Button variant="link" className="p-0 md:block lg:hidden">
           <TextAlignJustifyIcon width="36" height="36" />
         </Button>
       </SheetTrigger>

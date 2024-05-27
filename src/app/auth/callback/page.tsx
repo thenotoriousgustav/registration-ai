@@ -6,7 +6,7 @@ import { Suspense, useEffect } from "react";
 
 export default function Auth() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Please wait...</div>}>
       <GoogleCallback />
     </Suspense>
   );
@@ -30,5 +30,13 @@ function GoogleCallback() {
     handleGoogleResponse();
   }, [params, router]);
 
-  return <div>Loading...</div>;
+  return (
+    <section className="h-screen w-screen">
+      <div className="h-full grid place-content-center text-center">
+        <h1 className="text-xl font-semibold">Authenticating</h1>
+        <p className="text-gray-500">Cat is validating your identitiy.</p>
+        <p className="text-gray-500">Please Wait...</p>
+      </div>
+    </section>
+  );
 }
