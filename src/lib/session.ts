@@ -1,4 +1,5 @@
 "use server";
+
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -15,7 +16,7 @@ export async function encrypt(payload: any) {
     .sign(encodedKey);
 }
 
-export async function decrypt(session: string | undefined = "") {
+export async function decrypt(session: string | undefined = ""): Promise<any> {
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
@@ -32,25 +33,14 @@ export async function getSession() {
   return await decrypt(session);
 }
 
-// export async function getSession() {
-//   const session = cookies().get("session")?.value;
-//   if (!session) return null;
-
-//   return new Promise((resolve) =>
-//     setTimeout(async () => {
-//       // cookies will be called outside of the async context, causing a build-time error
-//       return resolve(session);
-//     }, 1000)
-//   );
-// }
-
 export async function createSession(accessToken: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
   const session = await encrypt({ accessToken, expiresAt });
 
   cookies().set("session", session, {
-    httpOnly: true,
-    secure: true,
+    httpOnly: false,
+    secure: false,
     expires: expiresAt,
     sameSite: "lax",
     path: "/",
@@ -58,7 +48,7 @@ export async function createSession(accessToken: string) {
 }
 
 export async function updateSession(req: NextRequest) {
-  const session = cookies().get("session")?.value;
+  const session = req.cookies.get("session")?.value;
   const payload = await decrypt(session);
 
   if (!session || !payload) {

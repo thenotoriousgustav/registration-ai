@@ -4,15 +4,15 @@ import { createSession } from "@/lib/session";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
 
-function GoogleCallback() {
+export default function Auth() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <GoogleCallbackContent />
+    <Suspense fallback={<div>Please wait...</div>}>
+      <GoogleCallback />
     </Suspense>
   );
 }
 
-function GoogleCallbackContent() {
+function GoogleCallback() {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -21,10 +21,8 @@ function GoogleCallbackContent() {
       const accessToken = params.get("token");
 
       if (accessToken) {
-        // Simpan access token ke cookies menggunakan createSession()
-        await createSession(accessToken as string);
+        await createSession(accessToken);
 
-        // Redirect ke halaman home setelah berhasil menyimpan access token
         router.push("/");
       }
     }
@@ -32,7 +30,13 @@ function GoogleCallbackContent() {
     handleGoogleResponse();
   }, [params, router]);
 
-  return <div>Loading...</div>;
+  return (
+    <section className="h-screen w-screen">
+      <div className="h-full grid place-content-center text-center">
+        <h1 className="text-xl font-semibold">Authenticating</h1>
+        <p className="text-gray-500">Cat is validating your identitiy.</p>
+        <p className="text-gray-500">Please Wait...</p>
+      </div>
+    </section>
+  );
 }
-
-export default GoogleCallback;

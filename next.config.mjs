@@ -1,7 +1,34 @@
 import CopyPlugin from "copy-webpack-plugin";
 
-/** @type {import('next').NextConfig} */
+const wasmPaths = [
+  "./node_modules/onnxruntime-web/dist/ort-wasm.wasm",
+  "./node_modules/onnxruntime-web/dist/ort-wasm-threaded.wasm",
+  "./node_modules/onnxruntime-web/dist/ort-wasm-simd.wasm",
+  "./node_modules/onnxruntime-web/dist/ort-wasm-simd.jsep.wasm",
+  "./node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.wasm",
+  "./node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.jsep.wasm",
+  "./node_modules/onnxruntime-web/dist/ort-training-wasm-simd.wasm",
+];
+
+const vadModelFiles = [
+  "./node_modules/@ricky0123/vad-web/dist/vad.worklet.bundle.min.js",
+  "./node_modules/@ricky0123/vad-web/dist/silero_vad.onnx",
+];
+
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
+  },
+
   webpack: (config, {}) => {
     config.resolve.extensions.push(".ts", ".tsx");
     config.resolve.fallback = { fs: false };
@@ -14,25 +41,18 @@ const nextConfig = {
     config.plugins.push(
       new CopyPlugin({
         patterns: [
-          {
-            from: "./node_modules/onnxruntime-web/dist/ort-wasm.wasm",
-            to: "static/chunks/[name][ext]",
-          },
-          {
-            from: "./node_modules/onnxruntime-web/dist/ort-wasm-simd.wasm",
-            to: "static/chunks/[name][ext]",
-          },
-          {
-            from: "node_modules/@ricky0123/vad-web/dist/vad.worklet.bundle.min.js",
-            to: "static/chunks/[name][ext]",
-          },
-          {
-            from: "node_modules/@ricky0123/vad-web/dist/*.onnx",
-            to: "static/chunks/[name][ext]",
-          },
+          ...wasmPaths.map((path) => ({
+            from: path,
+            to: "static/chunks",
+          })),
+          ...vadModelFiles.map((path) => ({
+            from: path,
+            to: "static/chunks",
+          })),
         ],
       })
     );
+
     return config;
   },
 };
