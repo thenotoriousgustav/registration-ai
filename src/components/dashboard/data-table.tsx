@@ -31,14 +31,12 @@ import { ReactNode, useState } from "react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  //   addDialog: ReactNode;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-}: //   addDialog,
-DataTableProps<TData, TValue>) {
+}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [filterState, setFilterState] = useState<string>("");
 
@@ -59,7 +57,7 @@ DataTableProps<TData, TValue>) {
     <>
       <div className="flex gap-2 items-center py-3 w-full">
         {/* search filter */}
-        <div className="flex items-center w-1/3">
+        <div className="flex items-center w-1/4">
           <Input
             placeholder="Search"
             value={filterState as string}
@@ -71,9 +69,6 @@ DataTableProps<TData, TValue>) {
             className="max-w-sm"
           />
         </div>
-
-        {/* add button */}
-        {/* {addDialog} */}
 
         {/* Pagination */}
         <div className="ml-auto flex items-center justify-end gap-2">
@@ -102,13 +97,16 @@ DataTableProps<TData, TValue>) {
 
       {/* table  */}
       <div className="rounded-md border group ">
-        <Table>
+        <Table className="text-xs">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="text-center font-bold "
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -121,12 +119,13 @@ DataTableProps<TData, TValue>) {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="text-center ">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className=""
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

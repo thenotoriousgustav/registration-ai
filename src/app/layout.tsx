@@ -4,8 +4,6 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
-import Navigation from "@/components/navigation";
-import Footer from "@/components/footer";
 import { ToasterProvider } from "@/components/toaster-provider";
 import LoadingBar from "@/components/loading-bar";
 

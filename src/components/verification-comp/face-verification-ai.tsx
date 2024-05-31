@@ -98,8 +98,6 @@ export default function FaceVerificationAI({
         .withFaceDescriptor();
 
       if (imageFaceDetection && webcamFaceDetection) {
-        setLoading(false);
-
         const distance = faceapi.euclideanDistance(
           imageFaceDetection.descriptor,
           webcamFaceDetection.descriptor
@@ -146,7 +144,6 @@ export default function FaceVerificationAI({
 
   return (
     <div className="flex flex-col h-full items-center justify-center">
-      {loading && <Spinner />}
       <div>
         <canvas ref={canvasRef} className="absolute"></canvas>
         <video

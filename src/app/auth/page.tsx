@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function AuthPage() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   return (
     <section className="container relative hidden h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
@@ -51,7 +52,7 @@ export default function AuthPage() {
               or sign in with your existing account
             </p>
             <Button asChild>
-              <Link href="http://localhost:3001/auth/google/login">
+              <Link href={`${BASE_URL}/auth/google/login`}>
                 Continue With Google
               </Link>
             </Button>
