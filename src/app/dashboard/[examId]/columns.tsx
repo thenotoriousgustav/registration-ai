@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
-import { ApplicantDetailCard } from "@/components/dashboard/applicant-detail-card";
+import { ApplicantDetailCard } from "@/components/dashboard/application-detail-dialog";
 
 export type DetailExam = {
   id: String;

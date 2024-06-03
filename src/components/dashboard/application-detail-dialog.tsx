@@ -17,7 +17,7 @@ import Image from "next/image";
 import { getSession } from "@/lib/session";
 import { useEffect, useState } from "react";
 
-export function ApplicantDetailCard({ applicantId }: any) {
+export function ApplicantDetailDialog({ applicantId }: any) {
   const [applicant, setApplicant] = useState<any>(null);
 
   useEffect(() => {

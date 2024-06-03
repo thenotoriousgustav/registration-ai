@@ -5,9 +5,8 @@ import { Separator } from "@/components/ui/separator";
 import { BackButton } from "@/components/dashboard/back-button";
 import { getSession } from "@/lib/session";
 
-async function getApplicants({ examId }: any): Promise<Applicant[] | []> {
+async function getApplicants(examId: any) {
   try {
-    console.log(examId);
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const session = await getSession();
     const accessToken = session?.accessToken;
@@ -28,7 +27,6 @@ async function getApplicants({ examId }: any): Promise<Applicant[] | []> {
       throw data;
     }
 
-    console.log(data);
     return data.data;
   } catch (error: any) {
     console.error("Error fetching data:", error);
@@ -36,13 +34,13 @@ async function getApplicants({ examId }: any): Promise<Applicant[] | []> {
   }
 }
 
-const getExam = async ({ examId }: any) => {
+const getExam = async (examId: any) => {
   try {
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const session = await getSession();
     const accessToken = session?.accessToken;
 
-    const res = await fetch(`${BASE_URL}/admin/applications/${examId}`, {
+    const res = await fetch(`${BASE_URL}/admin/exams/${examId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -58,7 +56,6 @@ const getExam = async ({ examId }: any) => {
       throw data;
     }
 
-    console.log(data);
     return data.data;
   } catch (error: any) {
     console.error("Error fetching data:", error);
